@@ -10,7 +10,6 @@ const LoginForm = ({ onLogin }) => {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // Initialize Firebase (replace with your Firebase project configuration)
   const firebaseConfig = {
     apiKey: "AIzaSyD-f1yUyy447cwj7qxCikUna512nAIzquc",
     authDomain: "eurouuni-592c6.firebaseapp.com",
