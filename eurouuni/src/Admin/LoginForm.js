@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 import "../App.css";
 
 const LoginForm = ({ onLogin }) => {
@@ -8,17 +10,34 @@ const LoginForm = ({ onLogin }) => {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  // Initialize Firebase (replace with your Firebase project configuration)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD-f1yUyy447cwj7qxCikUna512nAIzquc",
+    authDomain: "eurouuni-592c6.firebaseapp.com",
+    projectId: "eurouuni-592c6",
+    storageBucket: "eurouuni-592c6.appspot.com",
+    messagingSenderId: "841016645103",
+    appId: "1:841016645103:web:1e5b392c565b3f3ecb121a",
+    measurementId: "G-3LHL4MZ938"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
   // Function to handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add logic for form submission here
-    if (username === "test" && password === "test") {
+
+    try {
+      // Sign in user with email and password
+      await firebase.auth().signInWithEmailAndPassword(username, password);
       alert("Login successful!");
       onLogin(); // Notify parent component about successful login
       setLoggedIn(true); // Set loggedIn state to true
-    } else {
+    } catch (error) {
       alert("Invalid username or password");
-      // Clear input fields or display error message
+      console.error(error.message);
     }
   };
 
