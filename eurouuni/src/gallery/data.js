@@ -126,7 +126,7 @@ export const categoriesData = [
 		items: [
 			{ imageSrc: "https://firebasestorage.googleapis.com/v0/b/eurouuni-592c6.appspot.com/o/images%2FHETA.jpg?alt=media&token=ce7f41cf-8ec5-408f-83a2-cbe4fd96065f", altText: "Heta", itemName: "Heta" },
 			{ imageSrc: "https://firebasestorage.googleapis.com/v0/b/eurouuni-592c6.appspot.com/o/images%2FTAKKAHELLA.jpg?alt=media&token=5e04b443-8617-4b6c-9e03-f09e21247ec8", altText: "Takkahella", itemName: "Takkahella" },
-			{ imageSrc: "https://firebasestorage.googleapis.com/v0/b/eurouuni-592c6.appspot.com/o/images%2FLIMPPU.jpg?alt=media&token=e2ee3905-344b-4c51-96fc-5620598e29c2", altText: "Limppu", itemName: "Limppu" },
+			{ imageSrc: "https://firebasestorage.googleapis.com/v0/b/eurouuni-592c6.appspot.com/o/images%2FLIMPPU.jpg?alt=media&token=e2d7192d-218a-4ca1-803e-95a3a92f3244", altText: "Limppu", itemName: "Limppu" },
 		]
 	},
 	{
