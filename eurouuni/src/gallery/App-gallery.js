@@ -32,7 +32,7 @@ const GalleryCategory = ({ categoryTitle, items }) => (
       {items.map((item) => (
         <div key={item.id} className="category-item">
           <img src={item.imageSrc} alt={item.altText} />
-          <p>{item.itemName}</p>
+          {/*<p>{item.itemName}</p>*/}
         </div>
       ))}
     </div>
