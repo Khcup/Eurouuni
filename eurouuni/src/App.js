@@ -12,6 +12,7 @@ import LoginForm from "./Admin/LoginForm";
 import "./App.css";
 import ChatButton from "./Eurobotti/Chatbutton";
 import AdminPage from './Admin/AdminPage';
+import Footer from "./Content/Footer";
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -211,43 +212,10 @@ const App = () => {
                 Verkkokauppaan
               </a>
             </div>
-          </div>
-        </div>
-
-        <div id="targetYhteistiedot" className="footer">
-          {/* footer */}
-          <div className="row">
-            <div className="col">
-              <h1>Yhteystiedot</h1>
-              <p>Puh. 0400573797, 0400644600, 0405269283</p>
-              <p>seu@suomeneurouuni.fi</p>
             </div>
-            <div className="col">
-              <h1>Sijainti</h1>
-              <p> Raita-ahontie 8</p>
-              <p>52700 Mäntyharju</p>
-            </div>
-            <div className="col">
-              <h1>Seuraa meitä myös instragramissa!</h1>
-              <a
-                rel="noreferrer"
-                target="_blank"
-                href="https://www.instagram.com/eurotulisijat/?hl=fi"
-              >
-                <image
-                  style={{
-                    backgroundImage: "url(../images/ig.png)",
-                    maxHeight: "10%",
-                    minWidth: "10%",
-                    opacity: "65%",
-                  }}
-                />
-                <p>eurotulisijat</p>
-              </a>
-            </div>
-          </div>
           <ChatButton />
         </div>
+        <Footer />
       </main>
     </Router>
   );
