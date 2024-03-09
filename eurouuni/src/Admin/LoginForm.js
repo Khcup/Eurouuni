@@ -3,22 +3,13 @@ import { Navigate } from "react-router-dom";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import "../App.css";
+import firebaseConfig from "../firebaseConfig";
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyD-f1yUyy447cwj7qxCikUna512nAIzquc",
-    authDomain: "eurouuni-592c6.firebaseapp.com",
-    projectId: "eurouuni-592c6",
-    storageBucket: "eurouuni-592c6.appspot.com",
-    messagingSenderId: "841016645103",
-    appId: "1:841016645103:web:1e5b392c565b3f3ecb121a",
-    measurementId: "G-3LHL4MZ938"
-  };
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
