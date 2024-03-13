@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 import "../App.css";
 import firebaseConfig from "../firebaseConfig";
 
@@ -10,6 +10,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState(null);
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -25,8 +26,8 @@ const LoginForm = () => {
       alert("Login successful!");
       setLoggedIn(true); // Set loggedIn state to true
     } catch (error) {
-      alert("Invalid username or password");
-      console.error(error.message);
+      setError("Invalid username or password");
+      console.error("Error signing in:", error);
     }
   };
 
@@ -35,15 +36,12 @@ const LoginForm = () => {
     const { name, value } = e.target;
     if (name === "username") setUsername(value);
     if (name === "password") setPassword(value);
+    checkFormFilled();
   };
 
   // Function to check if form fields are filled
   const checkFormFilled = () => {
-    if (username.trim() !== "" && password.trim() !== "") {
-      setIsFormFilled(true);
-    } else {
-      setIsFormFilled(false);
-    }
+    setIsFormFilled(username.trim() !== "" && password.trim() !== "");
   };
 
   // Redirect to admin page if logged in
@@ -59,10 +57,7 @@ const LoginForm = () => {
           type="text"
           name="username"
           value={username}
-          onChange={(e) => {
-            handleInputChange(e);
-            checkFormFilled();
-          }}
+          onChange={handleInputChange}
           placeholder="Email"
           className="login-input"
         />
@@ -70,10 +65,7 @@ const LoginForm = () => {
           type="password"
           name="password"
           value={password}
-          onChange={(e) => {
-            handleInputChange(e);
-            checkFormFilled();
-          }}
+          onChange={handleInputChange}
           placeholder="Password"
           className="login-input"
         />
@@ -81,6 +73,7 @@ const LoginForm = () => {
           Login
         </button>
       </form>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
