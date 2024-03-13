@@ -5,7 +5,7 @@ import 'firebase/compat/auth';
 import "../App.css";
 import firebaseConfig from "../firebaseConfig";
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isFormFilled, setIsFormFilled] = useState(false);
@@ -23,7 +23,6 @@ const LoginForm = ({ onLogin }) => {
       // Sign in user with email and password
       await firebase.auth().signInWithEmailAndPassword(username, password);
       alert("Login successful!");
-      onLogin(); // Notify parent component about successful login
       setLoggedIn(true); // Set loggedIn state to true
     } catch (error) {
       alert("Invalid username or password");
@@ -64,7 +63,7 @@ const LoginForm = ({ onLogin }) => {
             handleInputChange(e);
             checkFormFilled();
           }}
-          placeholder="Username"
+          placeholder="Email"
           className="login-input"
         />
         <input
