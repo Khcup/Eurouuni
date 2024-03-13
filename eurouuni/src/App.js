@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
 import Navbar from "./Navbar";
 import Remonttigallery from "./gallery/Remontit-gallery";
@@ -15,17 +14,6 @@ import AdminPage from './Admin/AdminPage';
 import Footer from "./Content/Footer";
 
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
-
-  // Function to handle authentication
-  const handleLogin = () => {
-    setAuthenticated(true);
-  };
-
-  // Function to handle logout
-  const handleLogout = () => {
-    setAuthenticated(false);
-  };
 
   const [tulisijat1, setTulisijat1] = useState(false);
   const [palvelut1, setPalvelut1] = useState(false);
@@ -39,13 +27,10 @@ const App = () => {
   return (
     <Router>
       <main>
-        <Navbar authenticated={authenticated} onLogout={handleLogout} />
+      <Navbar />
         <Routes>
-          <Route path="/auth" element={<LoginForm onLogin={handleLogin} />} />
-          <Route
-            path="/admin"
-            element={authenticated ? <AdminPage /> : <Navigate to="/auth" />}
-          />
+        <Route path="/auth" element={<LoginForm />} />
+          <Route path="/admin" element={<AdminPage />} />
           {/* Add other routes here */}
         </Routes>
         <header
