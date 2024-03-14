@@ -10,15 +10,23 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [emailError, setEmailError] = useState(null);
   const [error, setError] = useState(null);
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
 
+  // Regular expression for email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (emailError) {
+      return;
+    }
 
     try {
       // Sign in user with email and password
@@ -26,7 +34,7 @@ const LoginForm = () => {
       alert("Login successful!");
       setLoggedIn(true); // Set loggedIn state to true
     } catch (error) {
-      setError("Invalid username or password");
+      setError("Invalid email or password");
       console.error("Error signing in:", error);
     }
   };
@@ -34,7 +42,10 @@ const LoginForm = () => {
   // Function to handle input changes and update state accordingly
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "username") setUsername(value);
+    if (name === "username") {
+      setUsername(value);
+      checkEmailValidity(value);
+    }
     if (name === "password") setPassword(value);
     checkFormFilled();
   };
@@ -44,37 +55,52 @@ const LoginForm = () => {
     setIsFormFilled(username.trim() !== "" && password.trim() !== "");
   };
 
+  // Function to check the validity of the email address
+  const checkEmailValidity = (email) => {
+    if (!emailRegex.test(email)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError(null);
+    }
+  };
+
   // Redirect to admin page if logged in
   if (loggedIn) {
     return <Navigate to="/admin" />;
   }
 
+  // Conditionally render login form only if user is not logged in as admin
   return (
-    <div className="login-container">
-      <h2 className="login-title">Login</h2>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          value={username}
-          onChange={handleInputChange}
-          placeholder="Email"
-          className="login-input"
-        />
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handleInputChange}
-          placeholder="Password"
-          className="login-input"
-        />
-        <button type="submit" className="login-button" disabled={!isFormFilled}>
-          Login
-        </button>
-      </form>
-      {error && <p className="error-message">{error}</p>}
-    </div>
+    <>
+      {!loggedIn && (
+        <div className="login-container">
+          <h2 className="login-title">Admin Login</h2>
+          <form className="login-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="username"
+              value={username}
+              onChange={handleInputChange}
+              placeholder="Email"
+              className={`login-input ${emailError ? "error-input" : ""}`}
+            />
+            {emailError && <p className="error-message">{emailError}</p>}
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={handleInputChange}
+              placeholder="Password"
+              className="login-input"
+            />
+            <button type="submit" className="login-button" disabled={!isFormFilled}>
+              Login
+            </button>
+          </form>
+          {error && <p className="error-message">{error}</p>}
+        </div>
+      )}
+    </>
   );
 };
 
