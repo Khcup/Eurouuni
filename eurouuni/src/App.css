@@ -620,25 +620,25 @@ h4 {
 	color: #000;
 }
 
-  .input-group {
+.input-group {
 	margin-bottom: 15px;
-  }
+}
   
-  .input-group label {
+.input-group label {
 	display: block;
 	margin-bottom: 5px;
-  }
+}
   
-  .input-group input {
+.input-group input {
 	width: 100%;
 	padding: 8px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-  }
+}
   
-  button:hover {
+button:hover {
 	background-color: #fe852b;
-  }
+}
 
 /* LoginForm */
 .login-container {
@@ -652,27 +652,27 @@ h4 {
 	border-radius: 20px;
 	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 	z-index: 9999; /* Adjust the z-index value as needed */
-  }
+}
   
-  .login-title {
+.login-title {
 	text-align: center;
 	font-size: 24px;
 	margin-bottom: 20px;
-  }
+}
   
-  .login-form {
+.login-form {
 	display: flex;
 	flex-direction: column;
-  }
+}
   
-  .login-input {
+.login-input {
 	margin-bottom: 20px;
 	padding: 10px;
 	border: 1px solid #d8d8d8;
 	border-radius: 5px;
-  }
+}
   
-  .login-button {
+.login-button {
 	padding: 10px;
 	background-color: #0056b3;
 	color: #ffffff;
@@ -680,24 +680,63 @@ h4 {
 	border-radius: 5px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
-  }
-  
-  .login-button:hover {
+}
+
+.login-button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+}
+ 
+.login-button:hover {
 	background-color: #004080;
-  }
+}
   
-  .login-button:focus {
+.login-button:focus {
 	outline: none;
-  }
-  .logout-button {
-	background-color: red; /* Change the background color */
-	color: white; /* Change the text color */
-	border: none;
-	padding: 10px 20px;
-	cursor: pointer;
-	border-radius: 5px;
-  }
+}
+
+.logout-button {
+	background-color: #ff0000; /* Red background color */
+	color: #fff; /* White text color */
+	border: none; /* Remove border */
+	padding: 8px 16px; /* Add padding */
+	cursor: pointer; /* Change cursor to pointer on hover */
+	border-radius: 4px; /* Add border radius */
+}
   
-  .logout-button:hover {
-	background-color: darkred; /* Change the background color on hover */
-  }
+.logout-button:hover {
+	background-color: #cc0000; /* Darker red background color on hover */
+}
+
+.edit-button {
+	top: 10px;
+	right: 10px;
+	padding: 10px 20px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+}
+  
+.edit-button:hover {
+	background-color: #45a049;
+}
+
+.edit-input {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	flex-wrap: wrap;
+	flex-direction: column;
+	display: block;
+}
+  
+.edit-input:focus {
+	outline: none;
+	border-color: #4caf50;
+	box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
