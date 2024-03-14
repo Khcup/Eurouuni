@@ -12,6 +12,7 @@ import "./App.css";
 import ChatButton from "./Eurobotti/Chatbutton";
 import AdminPage from './Admin/AdminPage';
 import Footer from "./Content/Footer";
+import Ajankohtaista from "./Content/Ajankohtaista";
 
 const App = () => {
 
@@ -42,18 +43,7 @@ const App = () => {
         >
           <image src="" alt="" className="logo" />
         </header>
-        <div className="container">
-          <div className="card">
-            <div className="card-body">
-              <h4 className="card-title">Ajankohtaista</h4>
-              <p>
-                -Talven kylmyyteen uusi kamina alkaen 880€. Tutustu
-                verkkokauppaamme eurotulisijat.fi-
-              </p>
-              <p>-Tulisijakorjaukset nopealla aikataululla, KYSY LISÄÄ! -</p>
-            </div>
-          </div>
-        </div>
+        <Ajankohtaista />
         <div id="targetGalleria"></div>
         <div className="container">
           {/* Tulisijat */}
