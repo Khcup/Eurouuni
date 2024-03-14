@@ -1,8 +1,17 @@
+// Navbar.js
+
 import React from "react";
 import { Link } from 'react-router-dom';
 import "./App.css";
 
-function Navbar({ authenticated, onLogout }) {
+const Navbar = () => {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="p-menu1">
       <nav id="navbar" className="navigation" role="navigation">
@@ -16,20 +25,17 @@ function Navbar({ authenticated, onLogout }) {
           <ul>
             {navItems.map((item) => (
               <li key={item.id}>
-                <Link to={`#${item.id}`}>{item.label}</Link>
+                <Link to={`#${item.id}`} onClick={() => scrollToSection(item.id)}>{item.label}</Link>
               </li>
             ))}
           </ul>
         </div>
         <nav className="menu1">
           {navItems.map((item) => (
-            <Link key={item.id} className="link1" to={`#${item.id}`}>
+            <Link key={item.id} className="link1" to={`#${item.id}`} onClick={() => scrollToSection(item.id)}>
               {item.label}
             </Link>
           ))}
-          {authenticated && (
-            <button className="logout-button" onClick={onLogout}>Logout</button>
-          )}
         </nav>
       </nav>
     </section>
@@ -40,7 +46,7 @@ const navItems = [
   { id: "targetGalleria", label: "Galleria" },
   { id: "targetPalvelut", label: "Palvelut" },
   { id: "targetVerkkokauppa", label: "Verkkokauppa" },
-  { id: "targetYhteistiedot", label: "Yhteystiedot" },
+  { id: "targetYhteystiedot", label: "Yhteystiedot" },
 ];
 
 export default Navbar;
