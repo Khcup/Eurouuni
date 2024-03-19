@@ -1,38 +1,33 @@
-import React, { useState } from "react";
-import { galleryData, categoriesData } from "./data";
+import React, { useState, useEffect } from "react";
+import firebase from "firebase/compat/app";
+import "firebase/compat/storage";
+import "firebase/compat/firestore";
+import firebaseConfig from "../firebaseConfig";
 
-const AppGalleryItem = ({ item, toggleGallery }) => (
-  <appgalleryitem className="ng-star-inserted">
-    <div className="itemswrapper">
-      <a
-        href={`#/gallery/${item.id}`}
-        onClick={() => toggleGallery(item.title)}
-        style={{ cursor: "pointer" }}
-      >
-        <img
-          alt={item.title}
-          className="img-responsive"
-          style={{
-            maxHeight: "220px",
-            display: "block",
-            width: "100%",
-          }}
-          src={item.imageUrl}
-        />
-        <h4 style={{ color: "black" }}>{item.title}</h4>
-      </a>
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const firestore = firebase.firestore();
+
+const AppGalleryItem = ({ item, toggleGallery, showText }) => (
+  <div className="app-gallery-item">
+    <div className="item-wrapper">
+      <div onClick={() => toggleGallery(item.title)} style={{ cursor: "pointer" }}>
+        <img alt={item.title} className="img-responsive" src={item.imageUrl} />
+      </div>
+      {showText && <div>{item.title}</div>}
     </div>
-  </appgalleryitem>
+  </div>
 );
 
-const GalleryCategory = ({ categoryTitle, items }) => (
+const GalleryCategory = ({ category, selected, toggleGallery }) => (
   <div className="gallery-category">
-    <h2>{categoryTitle}</h2>
+    <h2>{category.title}</h2>
     <div className="category-items">
-      {items.map((item) => (
+      {category.items.map((item) => (
         <div key={item.id} className="category-item">
-          <img src={item.imageSrc} alt={item.altText} />
-          {/*<p>{item.itemName}</p>*/}
+          <AppGalleryItem item={item} toggleGallery={toggleGallery} showText={!selected} />
         </div>
       ))}
     </div>
@@ -41,48 +36,81 @@ const GalleryCategory = ({ categoryTitle, items }) => (
 
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [showAll, setShowAll] = useState(true);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categoriesRef = firestore.collection("tulisijatcategories");
+      const orderRef = firestore.collection("categoryOrder").doc("order");
+
+      try {
+        await categoriesRef.get();
+        const orderSnapshot = await orderRef.get();
+
+        const fetchedCategories = await Promise.all(
+          orderSnapshot.exists ? orderSnapshot.data().order.map(async (categoryId) => {
+            const categoryRef = await categoriesRef.doc(categoryId).get();
+            const categoryName = categoryRef.data().text;
+            const categoryImages = await fetchCategoryImages(categoryId);
+            return { id: categoryId, title: categoryName, items: categoryImages };
+          }) : []
+        );
+
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const fetchCategoryImages = async (categoryId) => {
+    const storageRef = firebase.storage().ref().child("images").child(categoryId);
+    const categoryImages = await storageRef.listAll();
+
+    const categoryItems = await Promise.all(
+      categoryImages.items.map(async (imageRef) => {
+        const url = await imageRef.getDownloadURL();
+        return { id: imageRef.name, title: imageRef.name, imageUrl: url };
+      })
+    );
+
+    return categoryItems;
+  };
 
   const toggleGallery = (title) => {
-    if (title === "All") {
+    if (selectedCategory && selectedCategory.title === title) {
       setSelectedCategory(null);
-      setShowAll(true);
     } else {
-      const category = categoriesData.find(
-        (category) => category.title === title,
-      );
+      const category = categories.find((category) => category.title === title);
       setSelectedCategory(category);
-      setShowAll(false);
     }
   };
 
   return (
-    <div>
-      {showAll
-        ? galleryData.map((item) => (
-            <AppGalleryItem
-              key={item.id}
-              item={item}
-              toggleGallery={toggleGallery}
-            />
-          ))
-        : selectedCategory && (
-            <div>
-              <button
-                className="back-button"
-                onClick={() => {
-                  setShowAll(true);
-                  setSelectedCategory(null);
-                }}
-              >
-                « Takaisin
-              </button>
-              <GalleryCategory
-                categoryTitle={selectedCategory.title}
-                items={selectedCategory.items}
-              />
-            </div>
-          )}
+    <div className="gallery-container">
+      {selectedCategory ? (
+        <div>
+          <button className="back-button" onClick={() => setSelectedCategory(null)}>
+            « Back
+          </button>
+          <GalleryCategory
+            category={selectedCategory}
+            selected={true}
+            toggleGallery={toggleGallery}
+          />
+        </div>
+      ) : (
+        categories.map((category) => (
+          <AppGalleryItem
+            key={category.id}
+            item={{ id: category.id, title: category.title, imageUrl: category.items[0]?.imageUrl }}
+            toggleGallery={toggleGallery}
+            showText={true}
+          />
+        ))
+      )}
     </div>
   );
 };
