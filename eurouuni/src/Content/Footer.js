@@ -10,7 +10,6 @@ const auth = getAuth(app);
 
 const Footer = () => {
   const [footerContent, setFooterContent] = useState(null);
-  const [editing, setEditing] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -58,25 +57,6 @@ const Footer = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleEdit = () => {
-    if (user) {
-      setEditing(true);
-    } else {
-      // Redirect to login page or show a message indicating authentication is required
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      await updateDoc(doc(db, 'footer', 'contact'), footerContent.contact);
-      await updateDoc(doc(db, 'footer', 'location'), footerContent.location);
-      await updateDoc(doc(db, 'footer', 'social'), footerContent.social);
-      setEditing(false);
-    } catch (error) {
-      console.error('Error updating footer content:', error);
-    }
-  };
-
   const handleChange = (e, category, field) => {
     setFooterContent((prevState) => ({
       ...prevState,
@@ -89,40 +69,14 @@ const Footer = () => {
 
   return (
     <div id="targetYhteistiedot" className="footer">
-      {/* Render edit button */}
-      {user && (
-        <button className="edit-button" onClick={editing ? handleSave : handleEdit}>
-          {editing ? 'Save' : 'Edit'}
-        </button>
-      )}
-
       {/* footer */}
       <div className="row">
         <div className="col">
           <h1>Yhteystiedot</h1>
           {footerContent && (
             <>
-              {editing ? (
-                <>
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.contact.phone}
-                    onChange={(e) => handleChange(e, 'contact', 'phone')}
-                  />
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.contact.email}
-                    onChange={(e) => handleChange(e, 'contact', 'email')}
-                  />
-                </>
-              ) : (
-                <>
-                  <p>{footerContent.contact.phone}</p>
-                  <p>{footerContent.contact.email}</p>
-                </>
-              )}
+              <p>{footerContent.contact.phone}</p>
+              <p>{footerContent.contact.email}</p>
             </>
           )}
         </div>
@@ -130,69 +84,29 @@ const Footer = () => {
           <h1>Sijainti</h1>
           {footerContent && (
             <>
-              {editing ? (
-                <>
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.location.address}
-                    onChange={(e) => handleChange(e, 'location', 'address')}
-                  />
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.location.city}
-                    onChange={(e) => handleChange(e, 'location', 'city')}
-                  />
-                </>
-              ) : (
-                <>
-                  <p>{footerContent.location.address}</p>
-                  <p>{footerContent.location.city}</p>
-                </>
-              )}
+              <p>{footerContent.location.address}</p>
+              <p>{footerContent.location.city}</p>
             </>
           )}
         </div>
         <div className="col">
           <h1>Seuraa meitä myös Instagramissa!</h1>
           {footerContent && (
-            <>
-              {editing ? (
-                <>
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.social.instagram}
-                    onChange={(e) => handleChange(e, 'social', 'instagram')}
-                  />
-                  <input
-                    className="edit-input"
-                    type="text"
-                    value={footerContent.social.instagramImage}
-                    onChange={(e) =>
-                      handleChange(e, 'social', 'instagramImage')
-                    }
-                  />
-                </>
-              ) : (
-                <a
-                  rel="noreferrer"
-                  target="_blank"
-                  href={footerContent.social.instagram}
-                >
-                  <img
-                    alt="Instagram"
-                    src={footerContent.social.instagramImage}
-                    style={{
-                      maxHeight: '10%',
-                      minWidth: '10%',
-                      opacity: '0.65',
-                    }}
-                  />
-                </a>
-              )}
-            </>
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href={footerContent.social.instagram}
+            >
+              <img
+                alt="Instagram"
+                src={footerContent.social.instagramImage}
+                style={{
+                  maxHeight: '10%',
+                  minWidth: '10%',
+                  opacity: '0.65',
+                }}
+              />
+            </a>
           )}
         </div>
       </div>
