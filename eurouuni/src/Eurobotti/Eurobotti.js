@@ -66,7 +66,7 @@ const Eurobotti = () => {
           <div className="message bot-message">
             <b>Yhteydenottobotti🤖</b>
             <br />
-            <span>👋Hei olen Suomen Eurouuni yhteydenottobottis</span>
+            <span>👋Hei olen Suomen Eurouuni yhteydenottobotti</span>
           </div>
         </div>
         <div className="chat-form">
