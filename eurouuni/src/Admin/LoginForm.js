@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -13,9 +13,24 @@ const LoginForm = () => {
   const [emailError, setEmailError] = useState(null);
   const [error, setError] = useState(null);
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+  useEffect(() => {
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    // Check authentication state
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setLoggedIn(true); // Set loggedIn state to true if user is authenticated
+      } else {
+        setLoggedIn(false); // Set loggedIn state to false if user is not authenticated
+      }
+    });
+
+    // Clean up listener
+    return () => unsubscribe();
+  }, []); // Only run this effect once, when the component mounts
 
   // Regular expression for email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,7 +47,6 @@ const LoginForm = () => {
       // Sign in user with email and password
       await firebase.auth().signInWithEmailAndPassword(username, password);
       alert("Login successful!");
-      setLoggedIn(true); // Set loggedIn state to true
     } catch (error) {
       setError("Invalid email or password");
       console.error("Error signing in:", error);
@@ -69,38 +83,34 @@ const LoginForm = () => {
     return <Navigate to="/admin" />;
   }
 
-  // Conditionally render login form only if user is not logged in as admin
+  // Render login form if not logged in
   return (
-    <>
-      {!loggedIn && (
-        <div className="login-container">
-          <h2 className="login-title">Admin Login</h2>
-          <form className="login-form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="username"
-              value={username}
-              onChange={handleInputChange}
-              placeholder="Email"
-              className={`login-input ${emailError ? "error-input" : ""}`}
-            />
-            {emailError && <p className="error-message">{emailError}</p>}
-            <input
-              type="password"
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-              placeholder="Password"
-              className="login-input"
-            />
-            <button type="submit" className="login-button" disabled={!isFormFilled}>
-              Login
-            </button>
-          </form>
-          {error && <p className="error-message">{error}</p>}
-        </div>
-      )}
-    </>
+    <div className="login-container">
+      <h2 className="login-title">Admin Login</h2>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={handleInputChange}
+          placeholder="Email"
+          className={`login-input ${emailError ? "error-input" : ""}`}
+        />
+        {emailError && <p className="error-message">{emailError}</p>}
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleInputChange}
+          placeholder="Password"
+          className="login-input"
+        />
+        <button type="submit" className="login-button" disabled={!isFormFilled}>
+          Login
+        </button>
+      </form>
+      {error && <p className="error-message">{error}</p>}
+    </div>
   );
 };
 
