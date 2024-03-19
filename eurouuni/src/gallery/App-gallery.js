@@ -37,28 +37,42 @@ const GalleryCategory = ({ category, selected, toggleGallery }) => (
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const categoriesRef = firestore.collection("tulisijatcategories");
-      const orderRef = firestore.collection("categoryOrder").doc("order");
-
       try {
-        await categoriesRef.get();
+        const categoriesRef = firestore.collection("tulisijatcategories");
+        const orderRef = firestore.collection("categoryOrder").doc("order");
+    
+        const snapshot = await categoriesRef.get();
         const orderSnapshot = await orderRef.get();
-
+    
         const fetchedCategories = await Promise.all(
-          orderSnapshot.exists ? orderSnapshot.data().order.map(async (categoryId) => {
-            const categoryRef = await categoriesRef.doc(categoryId).get();
-            const categoryName = categoryRef.data().text;
+          snapshot.docs.map(async (doc) => {
+            const categoryId = doc.id;
+            const categoryData = doc.data();
+            
+            // Check if 'text' field exists in the document data
+            const categoryName = categoryData && categoryData.text ? categoryData.text : "";
+            
             const categoryImages = await fetchCategoryImages(categoryId);
-            return { id: categoryId, title: categoryName, items: categoryImages };
-          }) : []
+            return {
+              id: categoryId,
+              title: categoryName,
+              items: categoryImages || [],
+            };
+          })
         );
 
-        setCategories(fetchedCategories);
+        // Apply category order
+        const orderedCategories = orderSnapshot.exists ? orderSnapshot.data().order.map(id => fetchedCategories.find(category => category.id === id)) : fetchedCategories;
+
+        setCategories(orderedCategories);
+        setLoading(false); // Set loading to false after fetching is complete
       } catch (error) {
         console.error("Error fetching categories:", error);
+        setLoading(false); // Set loading to false in case of error
       }
     };
 
@@ -87,6 +101,10 @@ const Gallery = () => {
       setSelectedCategory(category);
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Render loading state
+  }
 
   return (
     <div className="gallery-container">
