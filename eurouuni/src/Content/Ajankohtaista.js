@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import firebaseConfig from '../firebaseConfig';
-import { useLocation } from 'react-router-dom';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -13,7 +12,6 @@ const Ajankohtaista = () => {
   const [content3, setContent3] = useState('');
   const [content4, setContent4] = useState('');
   const [content5, setContent5] = useState('');
-  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
