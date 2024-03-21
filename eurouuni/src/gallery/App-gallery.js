@@ -37,9 +37,23 @@ const GalleryCategory = ({ category, selected, toggleGallery }) => (
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [description, setDescription] = useState(""); // State for description
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
+    const fetchDescription = async () => {
+      try {
+        const descriptionDoc = await firestore.collection("descriptions").doc("tulisijat").get();
+        if (descriptionDoc.exists) {
+          setDescription(descriptionDoc.data().text);
+        } else {
+          console.log("No description found.");
+        }
+      } catch (error) {
+        console.error("Error fetching description:", error);
+      }
+    };
+
     const fetchCategories = async () => {
       try {
         const categoriesRef = firestore.collection("tulisijatcategories");
@@ -76,6 +90,7 @@ const Gallery = () => {
       }
     };
 
+    fetchDescription();
     fetchCategories();
   }, []);
 
@@ -108,6 +123,8 @@ const Gallery = () => {
 
   return (
     <div className="gallery-container">
+      <p>{description}</p>
+
       {selectedCategory ? (
         <div>
           <button className="back-button" onClick={() => setSelectedCategory(null)}>
