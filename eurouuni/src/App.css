@@ -723,19 +723,20 @@ button:hover {
 }
 
 .admin-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: white;
-	border: 1px solid #ccc;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	transition: opacity 0.3s ease;
-	z-index: 9999999;
-	max-height: auto;
-  }
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+    z-index: 9999999;
+    overflow-y: auto;
+    max-height: 97vh; /* Set a specific maximum height */
+}
   
   .admin-panel.hidden {
 	opacity: 0;
@@ -748,7 +749,6 @@ button:hover {
 	right: 10px;
 	z-index: 9999999;
   }
-
   
   .admin-panel h1 {
 	font-size: 24px;
@@ -756,32 +756,34 @@ button:hover {
   }
   
   .element-buttons {
-	margin-bottom: 20px;
-  }
-  
-  .element-buttons button {
-	margin-right: 10px;
-	padding: 8px 16px;
-	font-size: 16px;
-	border: none;
-	border-radius: 4px;
-	background-color: #007bff;
-	color: #fff;
-	cursor: pointer;
-  }
-  
-  .element-buttons button:hover {
-	background-color: #b30000;
-  }
-  
-  .back-button button {
-	padding: 8px 16px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+.element-buttons button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.element-buttons button:hover {
+    background-color: #0056b3;
+}
+.back-button {
+	padding: 10px 20px;
 	font-size: 16px;
 	border: none;
 	border-radius: 4px;
 	background-color: #6c757d;
 	color: #fff;
 	cursor: pointer;
+	transition: background-color 0.3s ease;
   }
   
   .back-button button:hover {
@@ -804,24 +806,6 @@ button:hover {
 	margin-bottom: 10px;
   }
   
-  .save-button {
-	display: flex;
-	justify-content: flex-end;
-  }
-  
-  .save-button button {
-	padding: 8px 16px;
-	font-size: 16px;
-	border: none;
-	border-radius: 4px;
-	background-color: #28a745;
-	color: #fff;
-	cursor: pointer;
-  }
-  
-  .save-button button:hover {
-	background-color: #218838;
-  }
 
   .gallery-editing-container {
 	display: flex;
@@ -829,8 +813,8 @@ button:hover {
 	justify-content: space-around;
 	gap: 20px;
 	padding: 20px;
-	overflow-y: auto; /* Enable vertical scrolling */
-	max-height: calc(100vh - 200px); /* Set maximum height for scrolling */
+	max-height: calc(50vh); /* Set maximum height for container */
+	overflow-y: auto; /* Enable vertical scrolling if content exceeds container height */
   }
   
   .gallery-editing-category {
@@ -903,3 +887,146 @@ button:hover {
   .add-category-btn:hover {
 	background-color: #0056b3; /* Darker background color on hover */
   }
+
+
+.new-category-btn {
+  padding: 8px 16px;
+  margin-left: 10px;
+  align-content: end;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.delete-category-btn {
+  color: red;
+  cursor: pointer;
+  float: right;
+}
+
+.category-actions {
+    display: flex;
+    gap: 5px;
+	flex-wrap: wrap;
+  }
+
+  .category-actions button {
+    padding: 5px 10px;
+    font-size: 15px;
+	flex-wrap: wrap;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #006d04;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+
+  .category-actions button:hover {
+    background-color: #45a049;
+  }
+
+  .footer-editing-container {
+	margin: 20px;
+  }
+  
+  .success-message {
+	color: green;
+	margin-top: 10px;
+  }
+  
+  .error-message {
+	color: red;
+	margin-top: 10px;
+  }
+  
+  .footer-section {
+	width: 100%;
+	margin-bottom: 20px;
+	padding: 15px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #f9f9f9;
+  }
+  
+  h3 {
+	margin-bottom: 10px;
+	margin-top: 5px;
+	font-size: 18px;
+  }
+  
+  .edit-hint {
+	font-size: 12px;
+	font-style: italic;
+	color: #666;
+	margin-bottom: 5px;
+  }
+  
+  input[type="text"] {
+	width: calc(100% - 5px); /* Subtracting the padding from the width */
+	max-width: 100%;
+	padding: 12px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-sizing: border-box; /* Ensures padding is included in width calculation */
+  }
+  
+
+  .ajankohtaista-editing {
+	margin: 20px;
+  }
+
+  .content-item {
+	margin-bottom: 20px;
+  }
+  
+  label {
+	font-weight: bold;
+	margin-bottom: 5px;
+  }
+  
+  .content-textarea {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	resize: vertical; /* Allow vertical resizing */
+  }
+  
+  .save-button {
+	padding: 10px 20px;
+	font-size: 16px;
+	border: none;
+	border-radius: 4px;
+	background-color: #00c932;
+	color: #fff;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+  }
+  
+  .save-button:hover {
+	background-color: #00791e;
+  }
+
+  .logout-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545; /* Red color */
+  color: #fff; /* White text color */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #c82333; /* Darker shade of red on hover */
+}
