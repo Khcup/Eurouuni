@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import firebaseConfig from '../firebaseConfig';
@@ -10,6 +10,7 @@ const auth = getAuth(app);
 
 const Footer = () => {
   const [footerContent, setFooterContent] = useState(null);
+  const [footerTitles, setFooterTitles] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -36,6 +37,15 @@ const Footer = () => {
             location: locationData,
             social: socialData,
           });
+          
+          const contactTitle = contactData.title;
+          const locationTitle = locationData.title;
+          const socialTitle = socialData.title;
+          setFooterTitles({
+            contact: contactTitle,
+            location: locationTitle,
+            social: socialTitle,
+          });
         } else {
           console.error('One or more footer documents not found');
         }
@@ -57,22 +67,12 @@ const Footer = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleChange = (e, category, field) => {
-    setFooterContent((prevState) => ({
-      ...prevState,
-      [category]: {
-        ...prevState[category],
-        [field]: e.target.value,
-      },
-    }));
-  };
-
   return (
     <div id="targetYhteistiedot" className="footer">
       {/* footer */}
       <div className="row">
         <div className="col">
-          <h1>Yhteystiedot</h1>
+          <h1>{footerTitles?.contact}</h1>
           {footerContent && (
             <>
               <p>{footerContent.contact.phone}</p>
@@ -81,7 +81,7 @@ const Footer = () => {
           )}
         </div>
         <div className="col">
-          <h1>Sijainti</h1>
+          <h1>{footerTitles?.location}</h1>
           {footerContent && (
             <>
               <p>{footerContent.location.address}</p>
@@ -90,7 +90,7 @@ const Footer = () => {
           )}
         </div>
         <div className="col">
-          <h1>Seuraa meitä myös Instagramissa!</h1>
+            <h1>{footerTitles?.social}</h1>
           {footerContent && (
             <a
               rel="noreferrer"
