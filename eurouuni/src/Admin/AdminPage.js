@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import firebaseConfig from '../firebaseConfig';
@@ -7,6 +7,7 @@ import firebase from 'firebase/compat/app';
 import FooterEditing from './FooterEditing';
 import AjankohtaistaEditing from './AjankohtaistaEditing'; 
 import GalleryEditing from './GalleryEditing'; // Import the GalleryEditing component
+import RemontitEditing from './RemontitEditing'; // Import the GalleryEditing component
 import { useNavigate } from 'react-router-dom';
 
 const app = initializeApp(firebaseConfig);
@@ -81,26 +82,6 @@ const AdminPage = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      if (editMode === 'footer') {
-        await Promise.all([
-          updateDoc(doc(db, 'footer', 'contact'), footerContent.contact),
-          updateDoc(doc(db, 'footer', 'location'), footerContent.location),
-          updateDoc(doc(db, 'footer', 'social'), footerContent.social),
-        ]);
-      } else if (editMode === 'ajankohtaista') {
-        await updateDoc(doc(db, 'ajankohtaista', 'ajankohtaista1'), {
-          text: ajankohtaistaContent,
-        });
-      }
-      setIsEditing(false);
-      window.location.reload(); // Refresh the page
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
-
   const handleChange = (e, category, field) => {
     const { value } = e.target;
     if (category === 'ajankohtaista') {
@@ -149,13 +130,13 @@ const AdminPage = () => {
       )}
       {isEditing && user && (
         <div className="admin-panel">
-          <h1>Admin Panel</h1>
+          <h1>Ylläpitäjän paneeli</h1>
           {editMode ? ( // Check if editMode is set
-            <button onClick={handleBack}>Back</button>
+            <button className="back-button" onClick={handleBack}>Takaisin</button>
           ) : (
             <div className="element-buttons">
               <button onClick={() => handleElementEdit('footer')}>
-                Muokkaa Footer
+                Muokkaa Alatunnistetta
               </button>
               <button onClick={() => handleElementEdit('ajankohtaista')}>
                 Muokkaa Ajankohtaista
@@ -163,9 +144,12 @@ const AdminPage = () => {
               <button onClick={() => handleElementEdit('tulisija')}>
                 Muokkaa Tulisija
               </button>
+              <button onClick={() => handleElementEdit('remontit')}>
+                Muokkaa Remontit
+              </button> {/* Add this button */}
             </div>
           )}
-          {/* Your editing components for footer, ajankohtaista, and tulisija */}
+          {/* Your editing components for footer, ajankohtaista, tulisija, and remontit */}
           {editMode === 'footer' && (
             <FooterEditing
               footerContent={footerContent}
@@ -179,12 +163,12 @@ const AdminPage = () => {
             />
           )}
           {editMode === 'tulisija' && (
-            <>
               <GalleryEditing isAdminMode={true} />
-              <button onClick={handleSave}>Save</button>
-            </>
           )}
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+          {editMode === 'remontit' && (
+            <RemontitEditing isAdminMode={true} />
+          )}
+          <button className="logout-btn" onClick={handleLogout}>Kirjaudu ulos</button>
         </div>
       )}
     </div>
