@@ -63,29 +63,35 @@ const AjankohtaistaEditing = () => {
   };
 
   return (
-    <div>
+  <>
+    <div className="ajankohtaista-editing">
       <h2>Ajankohtaista Muokkaus</h2>
       {saveStatus === "success" && (
-        <p style={{ color: "green" }}>Data saved successfully!</p>
+        <p className="success-message">Data saved successfully!</p>
       )}
       {saveStatus === "error" && (
-        <p style={{ color: "red" }}>Error saving data. Please try again.</p>
+        <p className="error-message">Error saving data. Please try again.</p>
       )}
       {content.map((item) => (
-        <div key={item.id}>
+        <div className="content-item" key={item.id}>
           <label htmlFor={`content-${item.id}`}>Rivi {item.id}: </label>
           <textarea
             id={`content-${item.id}`}
+            className="content-textarea"
             value={item.text}
             onChange={(e) => handleChange(e, item.id)}
             placeholder={`Lisää sisältö riville ${item.id}...`}
             rows={5}
-            cols={50}
           />
         </div>
       ))}
-      <button onClick={handleSave}>Save</button>
     </div>
+        <div className="save-button-container">
+          <button className="save-button" onClick={handleSave}>
+            Tallenna
+          </button>
+      </div>
+    </>
   );
 };
 
