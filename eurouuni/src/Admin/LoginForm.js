@@ -46,9 +46,9 @@ const LoginForm = () => {
     try {
       // Sign in user with email and password
       await firebase.auth().signInWithEmailAndPassword(username, password);
-      alert("Login successful!");
+      alert("Kirjautuminen onnistui!");
     } catch (error) {
-      setError("Invalid email or password");
+      setError("Virheellinen sähköpostiosoite tai salasana");
       console.error("Error signing in:", error);
     }
   };
@@ -72,12 +72,11 @@ const LoginForm = () => {
   // Function to check the validity of the email address
   const checkEmailValidity = (email) => {
     if (!emailRegex.test(email)) {
-      setEmailError("Invalid email address");
+      setEmailError("Virheellinen sähköpostiosoite");
     } else {
-      setEmailError(null);
+      setEmailError(null); // Clear the emailError state when the email address is valid
     }
   };
-
   // Redirect to admin page if logged in
   if (loggedIn) {
     return <Navigate to="/admin" />;
@@ -86,14 +85,14 @@ const LoginForm = () => {
   // Render login form if not logged in
   return (
     <div className="login-container">
-      <h2 className="login-title">Admin Login</h2>
+      <h2 className="login-title">Ylläpitäjän kirjautuminen</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         <input
           type="text"
           name="username"
           value={username}
           onChange={handleInputChange}
-          placeholder="Email"
+          placeholder="Sähköposti"
           className={`login-input ${emailError ? "error-input" : ""}`}
         />
         {emailError && <p className="error-message">{emailError}</p>}
@@ -102,11 +101,11 @@ const LoginForm = () => {
           name="password"
           value={password}
           onChange={handleInputChange}
-          placeholder="Password"
+          placeholder="Salasana"
           className="login-input"
         />
         <button type="submit" className="login-button" disabled={!isFormFilled}>
-          Login
+          Kirjaudu sisään
         </button>
       </form>
       {error && <p className="error-message">{error}</p>}
