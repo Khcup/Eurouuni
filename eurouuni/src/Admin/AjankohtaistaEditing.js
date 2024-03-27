@@ -67,10 +67,10 @@ const AjankohtaistaEditing = () => {
     <div className="ajankohtaista-editing">
       <h2>Ajankohtaista Muokkaus</h2>
       {saveStatus === "success" && (
-        <p className="success-message">Data saved successfully!</p>
+        <p className="success-message">Tietojen tallennus onnistui!</p>
       )}
       {saveStatus === "error" && (
-        <p className="error-message">Error saving data. Please try again.</p>
+        <p className="error-message">Virhe tallennettaessa tietoja. Yritä uudelleen.</p>
       )}
       {content.map((item) => (
         <div className="content-item" key={item.id}>
