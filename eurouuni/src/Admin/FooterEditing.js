@@ -60,7 +60,7 @@ const FooterEditing = ({ footerContent, handleChange }) => {
       
       setSaveStatus('success');
     } catch (error) {
-      console.error('Error updating title:', error);
+      console.error('Virhe päivitettäessä otsikkoa:', error);
       setSaveStatus('error');
     }
   };
@@ -93,7 +93,7 @@ const FooterEditing = ({ footerContent, handleChange }) => {
         setSaveStatus(null);
       }, 3000); // Hide the message after 3 seconds
     } catch (error) {
-      console.error('Error saving data:', error);
+      console.error('Virhe tallennettaessa tietoja:', error);
       setSaveStatus('error');
     }
   };
@@ -102,7 +102,7 @@ const FooterEditing = ({ footerContent, handleChange }) => {
     try {
       await handleSave(); // Call handleSave function
     } catch (error) {
-      console.error('Error saving data:', error);
+      console.error('Virhe tallennettaessa tietoja:', error);
     }
   };
 
