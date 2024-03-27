@@ -3,7 +3,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/storage";
 import "firebase/compat/firestore";
 import firebaseConfig from "../firebaseConfig";
-import EditableTextField from "./EditableTextField";
 
 // Initialize Firebase
 if (!firebase.apps.length) {
@@ -17,7 +16,6 @@ const RemontitEditing = ({ isAdminMode }) => {
   const [categories, setCategories] = useState([]);
   const [selectedImages, setSelectedImages] = useState({});
   const [categoryOrder, setCategoryOrder] = useState([]);
-  const [description, setDescription] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -26,13 +24,12 @@ const RemontitEditing = ({ isAdminMode }) => {
         const orderRef = firestore
           .collection("categoryOrder")
           .doc("orderremontit");
-        const storedDescription = localStorage.getItem("descriptionText");
-        setDescription(storedDescription || (await fetchDescription()));
 
         const [snapshot, orderSnapshot] = await Promise.all([
           categoriesRef.get(),
           orderRef.get(),
         ]);
+
         const fetchedCategories = await Promise.all(
           snapshot.docs.map(async (doc) => {
             const categoryId = doc.id;
@@ -53,7 +50,7 @@ const RemontitEditing = ({ isAdminMode }) => {
         setCategories(fetchedCategories);
         setCategoryOrder(fetchedOrder);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Virhe noudettaessa luokkia:", error);
       }
     };
 
@@ -62,14 +59,36 @@ const RemontitEditing = ({ isAdminMode }) => {
 
   const fetchCategoryImages = async (categoryId) => {
     try {
-      const categoryImagesRef = storage.ref(`imagesremontit/${categoryId}`);
+      const categoryImagesRef = storage
+        .ref()
+        .child("imagesremontit")
+        .child(categoryId);
       const categoryImages = await categoryImagesRef.listAll();
+
+      // Fetch image URLs and create an array of objects with id, title, and imageUrl
       const categoryItems = await Promise.all(
         categoryImages.items.map(async (imageRef) => {
           const imageUrl = await imageRef.getDownloadURL();
-          return { id: imageRef.name, title: imageRef.name, imageUrl };
+          const id = imageUrl; // Use imageUrl as ID
+          return { id, title: imageRef.name, imageUrl };
         }),
       );
+
+      // Fetch the image order from Firestore
+      const orderSnapshot = await firestore
+        .collection("categoryRemontitImagesOrder")
+        .doc(categoryId)
+        .get();
+      const orderData = orderSnapshot.data();
+      if (orderData && orderData.order) {
+        const orderedIds = orderData.order;
+        categoryItems.sort((a, b) => {
+          const aIndex = orderedIds.indexOf(a.imageUrl);
+          const bIndex = orderedIds.indexOf(b.imageUrl);
+          return aIndex - bIndex;
+        });
+      }
+
       return categoryItems;
     } catch (error) {
       console.error("Error fetching category images:", error);
@@ -81,7 +100,7 @@ const RemontitEditing = ({ isAdminMode }) => {
     try {
       const selectedIds = Object.keys(selectedImages[category.id] || {});
       if (!selectedIds.length) {
-        alert("Select at least one image to delete.");
+        alert("Valitse vähintään yksi poistettava kuva.");
         return;
       }
 
@@ -101,28 +120,28 @@ const RemontitEditing = ({ isAdminMode }) => {
       setCategories(updatedCategories);
       setSelectedImages({ ...selectedImages, [category.id]: {} });
 
-      alert("Images deleted successfully!");
+      alert("Kuvien poistaminen onnistui!");
     } catch (error) {
-      console.error("Error deleting image:", error);
-      alert("An error occurred while deleting images.");
+      console.error("Virhe kuvan poistamisessa:", error);
+      alert("Kuvia poistettaessa tapahtui virhe.");
     }
   };
 
   const handleCategoryOrderChange = async (dragIndex, hoverIndex) => {
-    try {
-      const draggedCategoryId = categoryOrder[dragIndex];
-      const updatedOrder = [...categoryOrder];
-      updatedOrder.splice(dragIndex, 1);
-      updatedOrder.splice(hoverIndex, 0, draggedCategoryId);
-      setCategoryOrder(updatedOrder);
+    const draggedCategoryId = categoryOrder[dragIndex];
+    const updatedOrder = [...categoryOrder];
+    updatedOrder.splice(dragIndex, 1);
+    updatedOrder.splice(hoverIndex, 0, draggedCategoryId);
+    setCategoryOrder(updatedOrder);
 
+    try {
       await firestore
         .collection("categoryOrder")
         .doc("orderremontit")
         .set({ order: updatedOrder });
     } catch (error) {
-      console.error("Error updating category order:", error);
-      alert("An error occurred while updating category order.");
+      console.error("Virhe luokkajärjestyksen päivityksessä:", error);
+      alert("Luokkajärjestystä päivitettäessä tapahtui virhe.");
       // Attempt to revert to the previous order if updating fails
       try {
         const orderSnapshot = await firestore
@@ -134,7 +153,7 @@ const RemontitEditing = ({ isAdminMode }) => {
           setCategoryOrder([...orderData.order]);
         }
       } catch (fetchError) {
-        console.error("Error fetching category order:", fetchError);
+        console.error("Virhe haettaessa luokkajärjestystä:", fetchError);
         setCategoryOrder([...categoryOrder]);
       }
     }
@@ -142,10 +161,7 @@ const RemontitEditing = ({ isAdminMode }) => {
 
   const handleEditCategory = async (category) => {
     try {
-      const newCategoryName = prompt(
-        "Enter the new category name:",
-        category.title,
-      );
+      const newCategoryName = prompt("Anna uuden luokan nimi:", category.title);
       if (newCategoryName !== null && newCategoryName !== category.title) {
         await firestore
           .collection("remontitcategories")
@@ -156,21 +172,21 @@ const RemontitEditing = ({ isAdminMode }) => {
             cat.id === category.id ? { ...cat, title: newCategoryName } : cat,
           ),
         );
-        alert("Category name updated successfully!");
+        alert("Luokan nimen päivitys onnistui!");
       }
     } catch (error) {
-      console.error("Error editing category:", error);
-      alert("An error occurred while editing the category name.");
+      console.error("Virhe luokan muokkaamisessa:", error);
+      alert("Kategorian nimeä muokatessa tapahtui virhe.");
     }
   };
 
   const handleAddCategory = async () => {
     try {
-      const newCategoryName = prompt("Enter the new category name:");
+      const newCategoryName = prompt("Anna uuden luokan nimi:");
       if (newCategoryName) {
         const imageFiles = await selectImageFiles();
         if (imageFiles.length === 0) {
-          alert("Please upload at least one image.");
+          alert("Lataa vähintään yksi kuva.");
           return;
         }
 
@@ -189,11 +205,11 @@ const RemontitEditing = ({ isAdminMode }) => {
           }),
         );
 
-        alert("Category added successfully!");
+        alert("Kategoria lisätty onnistuneesti!");
       }
     } catch (error) {
-      console.error("Error adding category:", error);
-      alert("An error occurred while adding the category.");
+      console.error("Virhe luokan lisäämisessä:", error);
+      alert("Luokkaa lisättäessä tapahtui virhe.");
     }
   };
 
@@ -205,16 +221,16 @@ const RemontitEditing = ({ isAdminMode }) => {
       try {
         await imagesFolderRef.delete();
       } catch (error) {
-        console.error(`Error deleting category folder: ${error.message}`);
+        console.error(`Virhe luokkakansion poistamisessa: ${error.message}`);
 
         if (retryCount < MAX_RETRIES) {
-          console.log(`Retrying deletion attempt ${retryCount + 1}`);
+          console.log(`Poistoyritystä yritetään uudelleen ${retryCount + 1}`);
           retryCount++;
           await new Promise((resolve) => setTimeout(resolve, 1000));
           await deleteImagesFolderWithRetry(imagesFolderRef);
         } else {
           console.error(
-            `Maximum retries (${MAX_RETRIES}) reached. Failed to delete category.`,
+            `Uudelleenyritysten enimmäismäärä (${MAX_RETRIES}) saavutettu. Luokan poistaminen epäonnistui.`,
           );
           throw error;
         }
@@ -224,7 +240,7 @@ const RemontitEditing = ({ isAdminMode }) => {
     try {
       if (
         window.confirm(
-          `Are you sure you want to delete the category "${category.title}"? This action will also delete all associated images.`,
+          `Haluatko varmasti poistaa luokan "${category.title}"? Tämä toiminto poistaa myös kaikki liittyvät kuvat.`,
         )
       ) {
         const categoryDocRef = firestore
@@ -267,7 +283,7 @@ const RemontitEditing = ({ isAdminMode }) => {
               await imageRef.delete();
             } catch (error) {
               console.error(
-                `Error deleting image ${imageRef.name}: ${error.message}`,
+                `Virhe kuvan poistamisessa ${imageRef.name}: ${error.message}`,
               );
               throw error;
             }
@@ -276,11 +292,11 @@ const RemontitEditing = ({ isAdminMode }) => {
 
         await deleteImagesFolderWithRetry(imagesFolderRef);
 
-        alert("Category and associated images deleted successfully!");
+        alert("Luokka ja siihen liittyvät kuvat poistettu onnistuneesti!");
       }
     } catch (error) {
-      console.error("Error deleting category:", error);
-      alert("An error occurred while deleting the category.");
+      console.error("Virhe luokan poistamisessa:", error);
+      alert("Luokkaa poistettaessa tapahtui virhe.");
     }
   };
 
@@ -298,9 +314,9 @@ const RemontitEditing = ({ isAdminMode }) => {
       });
 
       await batch.commit();
-      console.log("Subcollection deleted successfully!");
+      console.log("Alakokoelma poistettu onnistuneesti!");
     } catch (error) {
-      console.error("Error deleting subcollection:", error);
+      console.error("Virhe alikokoelman poistamisessa:", error);
       throw error;
     }
   };
@@ -317,39 +333,43 @@ const RemontitEditing = ({ isAdminMode }) => {
   };
 
   const selectImageFiles = async () => {
-    try {
+    return new Promise((resolve, reject) => {
       const input = document.createElement("input");
       input.type = "file";
       input.accept = "image/*";
       input.multiple = true;
 
-      return new Promise((resolve, reject) => {
-        input.onchange = (event) => {
-          const files = event.target.files;
-          if (!files || files.length === 0) {
-            reject(new Error("No files selected."));
-          } else {
-            resolve(Array.from(files));
-          }
-        };
+      input.onchange = (event) => {
+        const files = event.target.files;
+        if (!files || files.length === 0) {
+          reject(new Error("Ei valittuja tiedostoja."));
+        } else {
+          resolve(Array.from(files));
+        }
+      };
 
-        input.click();
+      input.click();
+    });
+  };
+  const updateCategoryImageOrder = async (categoryId, imageOrder) => {
+    try {
+      await firestore.collection("categoryImagesOrder").doc(categoryId).set({
+        order: imageOrder,
       });
     } catch (error) {
-      console.error("Error selecting image files:", error);
+      console.error("Error updating category image order:", error);
       throw error;
     }
   };
-
   const updateCategoryOrder = async (newOrder) => {
     try {
       await firestore
         .collection("categoryOrder")
         .doc("orderremontit")
         .set({ order: newOrder });
-      console.log("Category order updated successfully!");
+      console.log("Luokkajärjestyksen päivitys onnistui!");
     } catch (error) {
-      console.error("Error updating category order:", error);
+      console.error("Virhe luokkajärjestyksen päivityksessä:", error);
       throw error;
     }
   };
@@ -359,10 +379,10 @@ const RemontitEditing = ({ isAdminMode }) => {
       const docRef = await firestore
         .collection("remontitcategories")
         .add({ text: categoryName });
-      console.log("Category added to Firestore successfully!");
+      console.log("Kategoria lisätty Firestoreen onnistuneesti!");
       return docRef.id;
     } catch (error) {
-      console.error("Error adding category to Firestore:", error);
+      console.error("Virhe lisättäessä luokkaa Firestoreen:", error);
       throw error;
     }
   };
@@ -376,11 +396,11 @@ const RemontitEditing = ({ isAdminMode }) => {
         .child(imageFile.name)
         .put(imageFile);
       console.log(
-        `Image ${imageFile.name} uploaded to storage successfully for category ${categoryId}.`,
+        `Kuva ${imageFile.name} luokkaan ${categoryId} tallennus onnistui.`,
       );
     } catch (error) {
       console.error(
-        `Error uploading image ${imageFile.name} to storage:`,
+        `Virhe kuvan lataamisessa ${imageFile.name} varastoon:`,
         error,
       );
       throw error;
@@ -396,10 +416,10 @@ const RemontitEditing = ({ isAdminMode }) => {
         .child(imageId);
       await imageRef.delete();
       console.log(
-        `Image ${imageId} deleted from storage successfully for category ${categoryId}.`,
+        `Kuva ${imageId} luokan poistaminen tallennustilasta onnistui ${categoryId}.`,
       );
     } catch (error) {
-      console.error(`Error deleting image ${imageId} from storage:`, error);
+      console.error(`Virhe kuvan poistamisessa ${imageId} varastosta:`, error);
       throw error;
     }
   };
@@ -408,7 +428,7 @@ const RemontitEditing = ({ isAdminMode }) => {
     try {
       const imageFiles = await selectImageFiles();
       if (imageFiles.length === 0) {
-        alert("Please upload at least one image.");
+        alert("Lataa vähintään yksi kuva.");
         return;
       }
 
@@ -418,10 +438,10 @@ const RemontitEditing = ({ isAdminMode }) => {
         }),
       );
 
-      alert("Images uploaded successfully!");
+      alert("Kuvien lataus onnistui!");
     } catch (error) {
-      console.error("Error uploading images:", error);
-      alert("An error occurred while uploading images.");
+      console.error("Virhe kuvien lataamisessa:", error);
+      alert("Virhe ladattaessa kuvia.");
     }
   };
 
@@ -440,45 +460,51 @@ const RemontitEditing = ({ isAdminMode }) => {
         ),
       );
 
-      alert("Changes saved successfully!");
+      alert("Muutokset tallennettu onnistuneesti!");
     } catch (error) {
-      console.error("Error saving changes:", error);
-      alert("An error occurred while saving changes.");
+      console.error("Virhe tallennettaessa muutoksia:", error);
+      alert("Muutoksia tallennettaessa tapahtui virhe.");
     }
   };
 
-  const fetchDescription = async () => {
-    try {
-      const descriptionRef = firestore
-        .collection("descriptions")
-        .doc("remontit");
-      const descriptionDoc = await descriptionRef.get();
+  const handleDrop = async (e, categoryId, newIndex) => {
+    e.preventDefault();
+    const draggedCategoryId = e.dataTransfer.getData("categoryId");
+    const draggedIndex = parseInt(e.dataTransfer.getData("index"));
 
-      if (descriptionDoc.exists) {
-        const descriptionText = descriptionDoc.data().text;
-        localStorage.setItem("descriptionText", descriptionText);
-        setDescription(descriptionText);
-      } else {
-        console.log("No description found.");
-      }
-    } catch (error) {
-      console.error("Error fetching description:", error);
-      throw error;
+    if (draggedCategoryId === categoryId && draggedIndex !== newIndex) {
+      setCategories((prevCategories) => {
+        const updatedCategories = prevCategories.map((category) => {
+          if (category.id === categoryId) {
+            const updatedItems = Array.from(category.items);
+            const [draggedItem] = updatedItems.splice(draggedIndex, 1);
+            updatedItems.splice(newIndex, 0, draggedItem);
+            return { ...category, items: updatedItems };
+          }
+          return category;
+        });
+
+        // Update the order in Firestore
+        const updatedOrder = updatedCategories.map((category) => category.id);
+        updateCategoryOrder(updatedOrder);
+
+        // Update image order within the category
+        const imageOrder = updatedCategories
+          .find((category) => category.id === categoryId)
+          .items.map((item) => item.id);
+        updateCategoryImageOrder(categoryId, imageOrder);
+
+        return updatedCategories;
+      });
     }
   };
+  const handleDragStart = (e, categoryId, index) => {
+    e.dataTransfer.setData("categoryId", categoryId);
+    e.dataTransfer.setData("index", index);
+  };
 
-  const handleDescriptionSave = async (newValue) => {
-    try {
-      await firestore
-        .collection("descriptions")
-        .doc("remontit")
-        .set({ text: newValue });
-      setDescription(newValue);
-      alert("Description saved successfully!");
-    } catch (error) {
-      console.error("Error saving description:", error);
-      alert("An error occurred while saving description.");
-    }
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -490,13 +516,6 @@ const RemontitEditing = ({ isAdminMode }) => {
       >
         Uusi Kategoria
       </button>
-      <div>
-        <EditableTextField
-          initialValue={description}
-          onSave={handleDescriptionSave}
-          descriptionKey="remontit" // Specify the description key
-        />
-      </div>
       <div className="gallery-editing-container">
         {categoryOrder.map((categoryId, index) => {
           const category = categories.find((cat) => cat.id === categoryId);
@@ -529,20 +548,34 @@ const RemontitEditing = ({ isAdminMode }) => {
                 )}
               </div>
               <div className="category-editing-items">
-                {category.items.map((item) => (
-                  <div key={item.id} className="category-editing-item">
-                    <input
-                      type="checkbox"
-                      checked={!!selectedImages[category.id]?.[item.id]}
-                      onChange={() => toggleImageSelection(category, item.id)}
-                    />
-                    <img
-                      className="item-image"
-                      src={item.imageUrl}
-                      alt={item.title}
-                    />
-                  </div>
-                ))}
+                {category.items.map(
+                  (
+                    item,
+                    index, // Add index parameter to map function
+                  ) => (
+                    <div
+                      key={item.id}
+                      className="category-editing-item"
+                      draggable
+                      onDragStart={(e) =>
+                        handleDragStart(e, category.id, index)
+                      }
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, category.id, index)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!selectedImages[category.id]?.[item.id]}
+                        onChange={() => toggleImageSelection(category, item.id)}
+                      />
+                      <img
+                        className="item-image"
+                        src={item.imageUrl}
+                        alt={item.title}
+                      />
+                    </div>
+                  ),
+                )}
               </div>
               {isAdminMode && (
                 <div className="category-actions">
