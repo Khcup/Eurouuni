@@ -13,6 +13,8 @@ import ChatButton from "./Eurobotti/Chatbutton";
 import AdminPage from './Admin/AdminPage';
 import Footer from "./Content/Footer";
 import Ajankohtaista from "./Content/Ajankohtaista";
+import Muutpalvelut from "./Content/Muutpalvelut";
+import Korjaukset from "./Content/Korjaukset";
 
 const App = () => {
 
@@ -95,16 +97,7 @@ const App = () => {
               </button>
             </div>
           </div>
-          {palvelut1 && (
-            <div>
-              <p>
-                Korjaamme vanhat tulisijat ja hormistot. Asennamme takkasydämet
-                avotakkoihin. Korjaamme vanhat tulipesät joko massaamalla tai
-                muuraamalla ne uudenveroisiksi. Muuraamme hormistot, asennamme
-                valmishormit (harkko- ja teräshormit)
-              </p>
-            </div>
-          )}
+          {palvelut1 && <Korjaukset />}
           {/* Remontit */}
           <div
             id="remontit"
@@ -154,15 +147,7 @@ const App = () => {
               </button>
             </div>
           </div>
-          {muutpalvelut1 && (
-            <div>
-              <p>
-                Kauttamme saat kattoturvatuotteet asennettuna. Piipunpellitykset
-                ja -hatut mittatilaustyönä. Vuokraamme myös kuljetuslauttaa
-                saarityömaille.
-              </p>
-            </div>
-          )}
+          {muutpalvelut1 && <Muutpalvelut />}
           {/* Verkkokauppa */}
           <div
             id="targetVerkkokauppa"
