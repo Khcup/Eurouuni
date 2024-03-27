@@ -187,10 +187,10 @@ const AdminPage = () => {
           )}
           {editMode === 'otsikko' && ( // Add this block
            <>
-<TitleEditing firestore={db} section="tulisijat" />
-<TitleEditing firestore={db} section="korjaukset" />
-<TitleEditing firestore={db} section="remontit" />
-<TitleEditing firestore={db} section="muutpalvelut" />
+              <TitleEditing firestore={db} section="tulisijat" />
+              <TitleEditing firestore={db} section="korjaukset" />
+              <TitleEditing firestore={db} section="remontit" />
+              <TitleEditing firestore={db} section="muutpalvelut" />
             </>
           )}
           <button className="logout-btn" onClick={handleLogout}>Kirjaudu ulos</button>
