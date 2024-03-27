@@ -6,8 +6,9 @@ import firebaseConfig from '../firebaseConfig';
 import firebase from 'firebase/compat/app';
 import FooterEditing from './FooterEditing';
 import AjankohtaistaEditing from './AjankohtaistaEditing'; 
-import GalleryEditing from './GalleryEditing'; // Import the GalleryEditing component
-import RemontitEditing from './RemontitEditing'; // Import the GalleryEditing component
+import GalleryEditing from './GalleryEditing';
+import RemontitEditing from './RemontitEditing';
+import TitleEditing from './TitleEditing'; // Import the TitleEditing component
 import { useNavigate } from 'react-router-dom';
 
 const app = initializeApp(firebaseConfig);
@@ -121,6 +122,16 @@ const AdminPage = () => {
     setEditMode(null); // Set editMode to null when handling back button click
   };
 
+  const scrollToBottom = () => {
+    const panel = document.getElementById('admin-panel');
+    panel.scrollTop = panel.scrollHeight;
+  };
+  
+  const scrollToTop = () => {
+    const panel = document.getElementById('admin-panel');
+    panel.scrollTop = 0;
+  };
+
   return (
     <div>
       {user && (
@@ -128,8 +139,11 @@ const AdminPage = () => {
           Toggle Admin Panel
         </button>
       )}
+          <div>
+      {/* Render other components */}
+    </div>
       {isEditing && user && (
-        <div className="admin-panel">
+        <div id="admin-panel" className="admin-panel">
           <h1>Ylläpitäjän paneeli</h1>
           {editMode ? ( // Check if editMode is set
             <button className="back-button" onClick={handleBack}>Takaisin</button>
@@ -147,6 +161,9 @@ const AdminPage = () => {
               <button onClick={() => handleElementEdit('remontit')}>
                 Muokkaa Remontit
               </button> {/* Add this button */}
+              <button onClick={() => handleElementEdit('otsikko')}> {/* Add this button */}
+                Muokkaa Otsikkoja
+              </button>
             </div>
           )}
           {/* Your editing components for footer, ajankohtaista, tulisija, and remontit */}
@@ -168,9 +185,21 @@ const AdminPage = () => {
           {editMode === 'remontit' && (
             <RemontitEditing isAdminMode={true} />
           )}
+          {editMode === 'otsikko' && ( // Add this block
+           <>
+<TitleEditing firestore={db} section="tulisijat" />
+<TitleEditing firestore={db} section="korjaukset" />
+<TitleEditing firestore={db} section="remontit" />
+<TitleEditing firestore={db} section="muutpalvelut" />
+            </>
+          )}
           <button className="logout-btn" onClick={handleLogout}>Kirjaudu ulos</button>
         </div>
+                  )}
+                  {isEditing && (
+              <button className="scroll-to-bottom-btn" onClick={scrollToBottom}>Vieritä alas ylläpitäjä paneeli</button>
       )}
+      <button className="scroll-to-top-btn" onClick={scrollToTop}>Vieritä ylös ylläpitäjä paneeli</button>
     </div>
   );
 };
