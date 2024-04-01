@@ -70,8 +70,7 @@ const Eurobotti = () => {
         </div>
         <div className="chat-form">
           <div className="message bot-message">
-          <br />
-            <span>Valitse ensin aihe alla olevista, niin olemme sinuun yhteydessä</span> 
+            <span>Valitse ensin aihe alla olevista ja täytä sen jälkeen tarvittavat tietosi, niin olemme sinuun yhteydessä</span> 
           </div>
         </div>
         <div className="chat-form" style={{ paddingBottom: "0" }}>
