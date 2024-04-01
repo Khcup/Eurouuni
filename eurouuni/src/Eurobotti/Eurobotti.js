@@ -64,15 +64,14 @@ const Eurobotti = () => {
       <div className="chat">
         <div className="chat-form">
           <div className="message bot-message">
-            <b>Yhteydenottobotti🤖</b>
-            <br />
-            <span>👋Hei olen Suomen Eurouuni yhteydenottobotti</span>
+            <span>Hei!👋 Haluasitko saada lisää tietoa tuotteistamme tai palveluistamme?</span>
             <br />
           </div>
         </div>
         <div className="chat-form">
           <div className="message bot-message">
-            <span>Valitse ensin alla olevista tarkentava aihe, josta toivot yhteydenottoani</span> 
+          <br />
+            <span>Valitse aihe alla olevista, niin olemme sinuun yhteydessä</span> 
           </div>
         </div>
         <div className="chat-form" style={{ paddingBottom: "0" }}>
