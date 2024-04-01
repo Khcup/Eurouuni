@@ -449,7 +449,7 @@ h4 {
 	overflow: scroll;
 	overflow-x: hidden;
 	overflow-y: scroll;
-	height: 290px;
+	height: 340px;
 }
 
 .chat-form {
@@ -462,7 +462,7 @@ h4 {
 	box-shadow: 7px 7px 56px -24px #00000091;
 	right: 70px;
 	bottom: 45px;
-	width: 250px;
+	width: 260px;
 	border-radius: 5px;
 	margin-top: 1rem;
 	margin-bottom: 1rem;

@@ -67,13 +67,12 @@ const Eurobotti = () => {
             <b>Yhteydenottobotti🤖</b>
             <br />
             <span>👋Hei olen Suomen Eurouuni yhteydenottobotti</span>
+            <br />
           </div>
         </div>
         <div className="chat-form">
           <div className="message bot-message">
-            <b>Yhteydenottobotti🤖</b>
-            <br />
-            <span>Valitse aihe jonka kanssa tarvitset apua alta</span>
+            <span>Valitse ensin alla olevista tarkentava aihe, josta toivot yhteydenottoani</span> 
           </div>
         </div>
         <div className="chat-form" style={{ paddingBottom: "0" }}>
@@ -91,9 +90,9 @@ const Eurobotti = () => {
             <button
               type="button"
               className={`chatbutton${
-                openForm === "Tulisija/tulisijakorjaus" ? " active" : ""
+                openForm === "Tulisija/korjaus" ? " active" : ""
               }`}
-              onClick={() => toggleForm("Tulisija/tulisijakorjaus")}
+              onClick={() => toggleForm("Tulisija/korjaus")}
             >
               Tulisija/tulisijakorjaus
             </button>
