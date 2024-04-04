@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../App.css";
+import firebase from "firebase/compat/app";
+import "firebase/firestore"; // Import Firestore
+import firebaseConfig from "../firebaseConfig";
 
 const Eurobotti = () => {
   const [openForm, setOpenForm] = useState(null);
@@ -8,8 +11,15 @@ const Eurobotti = () => {
   const [message, setMessage] = useState("");
   const [invalidFields, setInvalidFields] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(true);
+  
+  // Initialize Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
-  const handleSubmit = (e) => {
+  const firestore = firebase.firestore();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const invalidFieldsList = [];
     if (!name) {
@@ -23,19 +33,27 @@ const Eurobotti = () => {
     }
     setInvalidFields(invalidFieldsList);
 
-    // If any required fields are not filled, return without submitting the form
     if (invalidFieldsList.length > 0) {
       return;
     }
 
-    // Logic to handle form submission, not done yet
-    console.log("Form submitted:", { name, email, message });
+    // Store form data in Firestore
+    try {
+      await firestore.collection("yhteydenottolomake").add({
+        name: name,
+        email: email,
+        message: message
+      });
+      console.log("Form data submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting form data: ", error);
+    }
 
     // Reset form fields after submission
     setName("");
     setEmail("");
     setMessage("");
-    setOpenForm(null); // Close the form after submission
+    setOpenForm(null);
   };
 
   const toggleForm = (formName) => {
@@ -64,13 +82,16 @@ const Eurobotti = () => {
       <div className="chat">
         <div className="chat-form">
           <div className="message bot-message">
-            <span>Hei!👋 Haluasitko saada lisää tietoa tuotteistamme tai palveluistamme?</span>
+            <b>Yhteydenottobotti🤖</b>
             <br />
+            <span>👋Hei olen Suomen Eurouuni yhteydenottobotti</span>
           </div>
         </div>
         <div className="chat-form">
           <div className="message bot-message">
-            <span>Valitse ensin aihe alla olevista ja täytä sen jälkeen tarvittavat tietosi, niin olemme sinuun yhteydessä</span> 
+            <b>Yhteydenottobotti🤖</b>
+            <br />
+            <span>Valitse aihe jonka kanssa tarvitset apua alta</span>
           </div>
         </div>
         <div className="chat-form" style={{ paddingBottom: "0" }}>
@@ -88,9 +109,9 @@ const Eurobotti = () => {
             <button
               type="button"
               className={`chatbutton${
-                openForm === "Tulisija/korjaus" ? " active" : ""
+                openForm === "Tulisija/tulisijakorjaus" ? " active" : ""
               }`}
-              onClick={() => toggleForm("Tulisija/korjaus")}
+              onClick={() => toggleForm("Tulisija/tulisijakorjaus")}
             >
               Tulisija/tulisijakorjaus
             </button>
