@@ -20,7 +20,7 @@ const AppGalleryItem = ({ item, toggleGallery, showText }) => (
       >
         <img alt={item.title} className="img-responsive" src={item.imageUrl} />
       </div>
-      {showText && <div>{item.title}</div>}
+      {showText && <div className="galleryitemtittle">{item.title}</div>}
     </div>
   </div>
 );
@@ -145,7 +145,9 @@ const Remonttigallery = () => {
 
   return (
     <div className="gallery-container">
-      <p>{description}</p>
+      {description.split("\n").map((line, index) => (
+        <p key={index}>{line}</p>
+      ))}
 
       {selectedCategory ? (
         <div>
@@ -153,7 +155,7 @@ const Remonttigallery = () => {
             className="back-button"
             onClick={() => setSelectedCategory(null)}
           >
-            « Back
+            « Takaisin
           </button>
           <GalleryCategory
             category={selectedCategory}
