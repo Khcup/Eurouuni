@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/compat/app'; // Assuming you have Firebase initialized properly
+import React, { useState, useEffect } from "react";
+import firebase from "firebase/compat/app";
 
 const Muutpalvelut = () => {
   const [muutpalvelut, setMuutpalvelut] = useState(null);
@@ -7,29 +7,32 @@ const Muutpalvelut = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await firebase.firestore().collection('descriptions').doc('muutpalvelut').get();
+        const response = await firebase
+          .firestore()
+          .collection("descriptions")
+          .doc("muutpalvelut")
+          .get();
         if (response.exists) {
           setMuutpalvelut(response.data().text);
         } else {
-          console.log('Document does not exist');
+          console.log("Document does not exist");
         }
       } catch (error) {
-        console.error('Error fetching document:', error);
+        console.error("Error fetching document:", error);
       }
-      // Unreachable code here
-      return muutpalvelut; // This line is unreachable
+      return muutpalvelut;
     };
 
     fetchData();
   }, []);
 
-  // Render a loading state while data is being fetched
-  if (muutpalvelut === null) {
-    return <div>Loading...</div>;
-  }
-
-  // Render the fetched data
-  return <div>{muutpalvelut}</div>;
+  return (
+    <div>
+      {muutpalvelut && muutpalvelut.split('\n').map((line, index) => (
+        <div key={index}>{line}</div>
+      ))}
+    </div>
+  );
 };
 
 export default Muutpalvelut;
