@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import firebaseConfig from '../firebaseConfig';
-import firebase from 'firebase/compat/app';
-import FooterEditing from './FooterEditing';
-import AjankohtaistaEditing from './AjankohtaistaEditing'; 
-import GalleryEditing from './GalleryEditing';
-import RemontitEditing from './RemontitEditing';
-import TitleEditing from './TitleEditing'; // Import the TitleEditing component
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import firebaseConfig from "../firebaseConfig";
+import firebase from "firebase/compat/app";
+import FooterEditing from "./FooterEditing";
+import AjankohtaistaEditing from "./AjankohtaistaEditing";
+import GalleryEditing from "./GalleryEditing";
+import RemontitEditing from "./RemontitEditing";
+import TitleEditing from "./TitleEditing"; // Import the TitleEditing component
+import { useNavigate } from "react-router-dom";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -17,7 +17,7 @@ const auth = getAuth(app);
 
 const AdminPage = () => {
   const [footerContent, setFooterContent] = useState(null);
-  const [ajankohtaistaContent, setAjankohtaistaContent] = useState('');
+  const [ajankohtaistaContent, setAjankohtaistaContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(null);
@@ -26,10 +26,10 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const contactDocRef = doc(db, 'footer', 'contact');
-        const locationDocRef = doc(db, 'footer', 'location');
-        const socialDocRef = doc(db, 'footer', 'social');
-        const ajankohtaistaDocRef = doc(db, 'ajankohtaista', 'ajankohtaista1');
+        const contactDocRef = doc(db, "footer", "contact");
+        const locationDocRef = doc(db, "footer", "location");
+        const socialDocRef = doc(db, "footer", "social");
+        const ajankohtaistaDocRef = doc(db, "ajankohtaista", "ajankohtaista1");
 
         const contactDocSnap = await getDoc(contactDocRef);
         const locationDocSnap = await getDoc(locationDocRef);
@@ -50,14 +50,14 @@ const AdminPage = () => {
             social: socialData,
           });
         } else {
-          console.error('One or more footer documents not found');
+          console.error("One or more footer documents not found");
         }
 
         if (ajankohtaistaDocSnap.exists()) {
-          setAjankohtaistaContent(ajankohtaistaDocSnap.data().text || '');
+          setAjankohtaistaContent(ajankohtaistaDocSnap.data().text || "");
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -85,7 +85,7 @@ const AdminPage = () => {
 
   const handleChange = (e, category, field) => {
     const { value } = e.target;
-    if (category === 'ajankohtaista') {
+    if (category === "ajankohtaista") {
       setAjankohtaistaContent(value); // Update ajankohtaistaContent directly
     } else {
       // Update footerContent for other categories
@@ -97,15 +97,15 @@ const AdminPage = () => {
         },
       }));
     }
-  };  
+  };
 
   const handleLogout = async () => {
     try {
       await firebase.auth().signOut();
-      alert('Logout successful!');
-      navigate('/'); // Redirect to homepage
+      alert("Uloskirjautuminen onnistui!");
+      navigate("/"); // Redirect to homepage
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error);
     }
   };
 
@@ -123,12 +123,12 @@ const AdminPage = () => {
   };
 
   const scrollToBottom = () => {
-    const panel = document.getElementById('admin-panel');
+    const panel = document.getElementById("admin-panel");
     panel.scrollTop = panel.scrollHeight;
   };
-  
+
   const scrollToTop = () => {
-    const panel = document.getElementById('admin-panel');
+    const panel = document.getElementById("admin-panel");
     panel.scrollTop = 0;
   };
 
@@ -139,67 +139,72 @@ const AdminPage = () => {
           Toggle Admin Panel
         </button>
       )}
-          <div>
-      {/* Render other components */}
-    </div>
+      <div>{/* Render other components */}</div>
       {isEditing && user && (
         <div id="admin-panel" className="admin-panel">
           <h1>Ylläpitäjän paneeli</h1>
           {editMode ? ( // Check if editMode is set
-            <button className="back-button" onClick={handleBack}>Takaisin</button>
+            <button className="back-button" onClick={handleBack}>
+              Takaisin
+            </button>
           ) : (
             <div className="element-buttons">
-              <button onClick={() => handleElementEdit('footer')}>
+              <button onClick={() => handleElementEdit("footer")}>
                 Muokkaa Alatunnistetta
               </button>
-              <button onClick={() => handleElementEdit('ajankohtaista')}>
+              <button onClick={() => handleElementEdit("ajankohtaista")}>
                 Muokkaa Ajankohtaista
               </button>
-              <button onClick={() => handleElementEdit('tulisija')}>
+              <button onClick={() => handleElementEdit("tulisija")}>
                 Muokkaa Tulisija
               </button>
-              <button onClick={() => handleElementEdit('remontit')}>
+              <button onClick={() => handleElementEdit("remontit")}>
                 Muokkaa Remontit
-              </button> {/* Add this button */}
-              <button onClick={() => handleElementEdit('otsikko')}> {/* Add this button */}
+              </button>{" "}
+              {/* Add this button */}
+              <button onClick={() => handleElementEdit("otsikko")}>
+                {" "}
+                {/* Add this button */}
                 Muokkaa Otsikkoja
               </button>
             </div>
           )}
           {/* Your editing components for footer, ajankohtaista, tulisija, and remontit */}
-          {editMode === 'footer' && (
+          {editMode === "footer" && (
             <FooterEditing
               footerContent={footerContent}
               handleChange={handleChange}
             />
           )}
-          {editMode === 'ajankohtaista' && (
+          {editMode === "ajankohtaista" && (
             <AjankohtaistaEditing
               content={ajankohtaistaContent}
               handleChange={handleChange}
             />
           )}
-          {editMode === 'tulisija' && (
-              <GalleryEditing isAdminMode={true} />
-          )}
-          {editMode === 'remontit' && (
-            <RemontitEditing isAdminMode={true} />
-          )}
-          {editMode === 'otsikko' && ( // Add this block
-           <>
+          {editMode === "tulisija" && <GalleryEditing isAdminMode={true} />}
+          {editMode === "remontit" && <RemontitEditing isAdminMode={true} />}
+          {editMode === "otsikko" && (
+            <>
               <TitleEditing firestore={db} section="tulisijat" />
               <TitleEditing firestore={db} section="korjaukset" />
               <TitleEditing firestore={db} section="remontit" />
               <TitleEditing firestore={db} section="muutpalvelut" />
             </>
           )}
-          <button className="logout-btn" onClick={handleLogout}>Kirjaudu ulos</button>
+          <button className="logout-btn" onClick={handleLogout}>
+            Kirjaudu ulos
+          </button>
         </div>
-                  )}
-                  {isEditing && (
-              <button className="scroll-to-bottom-btn" onClick={scrollToBottom}>Vieritä alas ylläpitäjä paneeli</button>
       )}
-      <button className="scroll-to-top-btn" onClick={scrollToTop}>Vieritä ylös ylläpitäjä paneeli</button>
+      {isEditing && (
+        <button className="scroll-to-bottom-btn" onClick={scrollToBottom}>
+          Vieritä alas ylläpitäjä paneeli
+        </button>
+      )}
+      <button className="scroll-to-top-btn" onClick={scrollToTop}>
+        Vieritä ylös ylläpitäjä paneeli
+      </button>
     </div>
   );
 };
