@@ -29,18 +29,29 @@ const EditableTextField = ({ initialValue, onSave, descriptionKey }) => {
     setValue(e.target.value);
   };
 
+  // Render the text with line breaks
+  const renderText = () => {
+    return value.split("\n").map((line, index) => <div key={index}>{line}</div>);
+  };
+
   return (
     <div>
       {isEditing ? (
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           value={value}
           onChange={handleChange}
           onBlur={handleSave}
+          style={{
+            width: "100%", // Full width
+            height: "10rem", // Default height for PC
+            "@media (max-width: 768px)": {
+              height: "5rem" // Adjust height for smaller screens
+            }
+          }}
         />
       ) : (
-        <button onClick={() => setIsEditing(true)}>{value}</button>
+        <button onClick={() => setIsEditing(true)}>{renderText()}</button>
       )}
     </div>
   );
