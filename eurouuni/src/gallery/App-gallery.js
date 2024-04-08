@@ -10,7 +10,7 @@ if (!firebase.apps.length) {
 const storage = firebase.storage();
 const firestore = firebase.firestore();
 
-const AppGalleryItem = ({ item, toggleGallery, showText}) => (
+const AppGalleryItem = ({ item, toggleGallery, showText }) => (
   <div className={`app-gallery-item`}>
     <div className="item-wrapper">
       <div
@@ -155,13 +155,11 @@ const Gallery = () => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>; // Render loading state
-  }
-
   return (
     <div className="gallery-container">
-      <p>{description}</p>
+      {description.split("\n").map((line, index) => (
+        <p key={index}>{line}</p>
+      ))}
 
       {selectedCategory ? (
         <div>
@@ -169,7 +167,7 @@ const Gallery = () => {
             className="back-button"
             onClick={() => setSelectedCategory(null)}
           >
-            « Back
+            « Takaisin
           </button>
           <GalleryCategory
             category={selectedCategory}
