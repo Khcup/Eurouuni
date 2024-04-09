@@ -3,6 +3,7 @@ import "../App.css";
 import firebase from "firebase/compat/app";
 import "firebase/firestore"; // Import Firestore
 import firebaseConfig from "../firebaseConfig";
+import emailjs from '@emailjs/browser';
 
 const Eurobotti = () => {
   const [openForm, setOpenForm] = useState(null);
@@ -11,13 +12,32 @@ const Eurobotti = () => {
   const [message, setMessage] = useState("");
   const [invalidFields, setInvalidFields] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(true);
-  
+
   // Initialize Firebase
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
 
   const firestore = firebase.firestore();
+
+  const sendEmail = (formData) => {
+    emailjs
+      .sendForm(
+        process.env.REACT_APP_EMAILJS_service_kksn77d, // Your EmailJS service ID
+        process.env.REACT_APP_EMAILJS_template_48d09lq, // Your EmailJS template ID
+        formData,
+        process.env.REACT_APP_EMAILJS_x8Kt46lSHFV2aAmt5 // Your EmailJS user ID
+      )
+      .then(
+        (result) => {
+          alert('Message sent successfully!');
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,13 +57,18 @@ const Eurobotti = () => {
       return;
     }
 
+    const formData = {
+      name: name,
+      email: email,
+      message: message
+    };
+
+    // Send email using EmailJS
+    sendEmail(formData);
+
     // Store form data in Firestore
     try {
-      await firestore.collection("yhteydenottolomake").add({
-        name: name,
-        email: email,
-        message: message
-      });
+      await firestore.collection("yhteydenottolomake").add(formData);
       console.log("Form data submitted successfully!");
     } catch (error) {
       console.error("Error submitting form data: ", error);
@@ -82,16 +107,12 @@ const Eurobotti = () => {
       <div className="chat">
         <div className="chat-form">
           <div className="message bot-message">
-            <b>Yhteydenottobotti🤖</b>
-            <br />
-            <span>👋Hei olen Suomen Eurouuni yhteydenottobotti</span>
+            <span>👋 Haluasitko saada lisää tietoa tuotteistamme tai palveluistamme?</span>
           </div>
         </div>
         <div className="chat-form">
           <div className="message bot-message">
-            <b>Yhteydenottobotti🤖</b>
-            <br />
-            <span>Valitse aihe jonka kanssa tarvitset apua alta</span>
+            <span>Valitse ensin aihe alla olevista ja täytä sen jälkeen tarvittavat tietosi, niin olemme sinuun yhteydessä</span>
           </div>
         </div>
         <div className="chat-form" style={{ paddingBottom: "0" }}>
@@ -111,7 +132,7 @@ const Eurobotti = () => {
               className={`chatbutton${
                 openForm === "Tulisija/tulisijakorjaus" ? " active" : ""
               }`}
-              onClick={() => toggleForm("Tulisija/tulisijakorjaus")}
+              onClick={() => toggleForm("Tulisija/korjaus")}
             >
               Tulisija/tulisijakorjaus
             </button>
