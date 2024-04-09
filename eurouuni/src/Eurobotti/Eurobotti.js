@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import firebase from "firebase/compat/app";
 import "firebase/firestore"; // Import Firestore
@@ -8,42 +8,32 @@ import emailjs from '@emailjs/browser';
 const Eurobotti = () => {
   const [openForm, setOpenForm] = useState(null);
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [invalidFields, setInvalidFields] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [form, setForm] = useState({}); // Form state
 
   // Initialize Firebase
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
 
-  const firestore = firebase.firestore();
+  useEffect(() => {
+    emailjs.init("5NZhvTA8dQOjHGAY6");
+  }, []);
 
-  const sendEmail = (formData) => {
-    emailjs
-      .sendForm(
-        process.env.REACT_APP_EMAILJS_service_0r4j1ef, // Your EmailJS service ID
-        process.env.REACT_APP_EMAILJS_template_a7sxmtj, // Your EmailJS template ID
-        formData,
-        process.env.REACT_APP_EMAILJS_5NZhvTA8dQOjHGAY6 // Your EmailJS user ID
-      )
-      .then(
-        (result) => {
-          alert('Message sent successfully!');
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-  };
+  const firestore = firebase.firestore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const invalidFieldsList = [];
     if (!name) {
       invalidFieldsList.push("name");
+    }
+    if (!phone) {
+      invalidFieldsList.push("phone");
     }
     if (!email || !isEmailValid) {
       invalidFieldsList.push("email");
@@ -57,18 +47,37 @@ const Eurobotti = () => {
       return;
     }
 
-    const formData = {
+    // Send email using EmailJS
+    const templateParams = {
       name: name,
+      phone: phone,
       email: email,
       message: message
     };
 
-    // Send email using EmailJS
-    sendEmail(formData);
+    emailjs.send(
+      "service_0r4j1ef", // Your EmailJS service ID
+      "template_a7sxmtj", // Your EmailJS template ID
+      templateParams,
+      "5NZhvTA8dQOjHGAY6" // Your EmailJS user ID
+    )
+      .then((result) => {
+        alert('Message sent successfully!');
+        console.log(result.text);
+      })
+      .catch((error) => {
+        console.error('Email sending failed:', error);
+        alert('Email sending failed. Please try again later.');
+      });
 
     // Store form data in Firestore
     try {
-      await firestore.collection("yhteydenottolomake").add(formData);
+      await firestore.collection("yhteydenottolomake").add({
+        name: name,
+        phone: phone,
+        email: email,
+        message: message,
+      });
       console.log("Form data submitted successfully!");
     } catch (error) {
       console.error("Error submitting form data: ", error);
@@ -76,6 +85,7 @@ const Eurobotti = () => {
 
     // Reset form fields after submission
     setName("");
+    setPhone("");
     setEmail("");
     setMessage("");
     setOpenForm(null);
@@ -107,7 +117,7 @@ const Eurobotti = () => {
       <div className="chat">
         <div className="chat-form">
           <div className="message bot-message">
-            <span>👋 Haluasitko saada lisää tietoa tuotteistamme tai palveluistamme?</span>
+            <span>👋Haluasitko saada lisää tietoa tuotteistamme tai palveluistamme?</span>
           </div>
         </div>
         <div className="chat-form">
@@ -121,7 +131,7 @@ const Eurobotti = () => {
               type="button"
               className={`chatbutton${
                 openForm === "Remontit" ? " active" : ""
-              }`}
+                }`}
               onClick={() => toggleForm("Remontit")}
             >
               Remontit
@@ -131,7 +141,7 @@ const Eurobotti = () => {
               type="button"
               className={`chatbutton${
                 openForm === "Tulisija/tulisijakorjaus" ? " active" : ""
-              }`}
+                }`}
               onClick={() => toggleForm("Tulisija/korjaus")}
             >
               Tulisija/tulisijakorjaus
@@ -141,7 +151,7 @@ const Eurobotti = () => {
               type="button"
               className={`chatbutton${
                 openForm === "Muu tiedustelu" ? " active" : ""
-              }`}
+                }`}
               onClick={() => toggleForm("Muu tiedustelu")}
             >
               Muu tiedustelu
@@ -158,12 +168,24 @@ const Eurobotti = () => {
                       id="name"
                       className={`form-control${
                         invalidFields.includes("name") ? " invalid" : ""
-                      }`}
+                        }`}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
                     />
                   </div>
+                  <div className="form-group">
+                  <label htmlFor="phone">Puhelinnumero</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    className={`form-control${invalidFields.includes("phone") ? " invalid" : ""}`}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
+
                   <div className="form-group">
                     <label htmlFor="email">Sähköposti</label>
                     <input
@@ -171,7 +193,7 @@ const Eurobotti = () => {
                       id="email"
                       className={`form-control${
                         invalidFields.includes("email") ? " invalid" : ""
-                      }`}
+                        }`}
                       value={email}
                       onChange={(e) => handleEmailChange(e.target.value)}
                       required
@@ -187,7 +209,7 @@ const Eurobotti = () => {
                       rows="3"
                       className={`form-control${
                         invalidFields.includes("message") ? " invalid" : ""
-                      }`}
+                        }`}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                     />
@@ -197,7 +219,7 @@ const Eurobotti = () => {
                     type="submit"
                     className={`submit-button${
                       isButtonDisabled() ? " disabled" : ""
-                    }`}
+                      }`}
                     disabled={isButtonDisabled()}
                   >
                     Lähetä Viesti
