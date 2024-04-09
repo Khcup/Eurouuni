@@ -23,10 +23,10 @@ const Eurobotti = () => {
   const sendEmail = (formData) => {
     emailjs
       .sendForm(
-        process.env.REACT_APP_EMAILJS_service_kksn77d, // Your EmailJS service ID
-        process.env.REACT_APP_EMAILJS_template_48d09lq, // Your EmailJS template ID
+        process.env.REACT_APP_EMAILJS_service_0r4j1ef, // Your EmailJS service ID
+        process.env.REACT_APP_EMAILJS_template_a7sxmtj, // Your EmailJS template ID
         formData,
-        process.env.REACT_APP_EMAILJS_x8Kt46lSHFV2aAmt5 // Your EmailJS user ID
+        process.env.REACT_APP_EMAILJS_5NZhvTA8dQOjHGAY6 // Your EmailJS user ID
       )
       .then(
         (result) => {
