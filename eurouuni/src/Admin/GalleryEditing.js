@@ -3,7 +3,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/storage";
 import "firebase/compat/firestore";
 import firebaseConfig from "../firebaseConfig";
-import EditableTextField from "./EditableTextField";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -16,7 +15,6 @@ const GalleryEditing = ({ isAdminMode }) => {
   const [categories, setCategories] = useState([]);
   const [selectedImages, setSelectedImages] = useState({});
   const [categoryOrder, setCategoryOrder] = useState([]);
-  const [description, setDescription] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,7 +74,7 @@ const GalleryEditing = ({ isAdminMode }) => {
         .doc(categoryId)
         .get();
       const orderData = orderSnapshot.data();
-      if (orderData && orderData.order) {
+      if (orderData?.order) {
         const orderedIds = orderData.order;
         categoryItems.sort((a, b) => {
           const aIndex = orderedIds.indexOf(a.imageUrl);
@@ -278,7 +276,7 @@ const GalleryEditing = ({ isAdminMode }) => {
       }
     } catch (error) {
       console.error("Virhe luokan poistamisessa:", error);
-      alert("Luokkaa poistettaessa tapahtui virhe.");
+      //alert("Luokkaa poistettaessa tapahtui virhe.");
     }
   };
 
@@ -293,7 +291,7 @@ const GalleryEditing = ({ isAdminMode }) => {
       await Promise.all(deletePromises);
     } catch (error) {
       console.error("Virhe alikokoelman poistamisessa:", error);
-      throw error; // Propagate the error to the caller for proper error handling
+      throw error;
     }
   };
 
@@ -489,7 +487,10 @@ const GalleryEditing = ({ isAdminMode }) => {
       >
         Uusi Kategoria
       </button>
-      <p>Pystyt vaihtamaan kuvien järjestystä painamalla kuvan ylä reunasta ja raahaamalla uudelle paikalle</p>
+      <p>
+        Pystyt vaihtamaan kuvien järjestystä painamalla kuvan ylä reunasta ja
+        raahaamalla uudelle paikalle
+      </p>
       <p>Jos haluat vaihtaa kategorian pää kuvaa, siirrä se ekalla paikalle</p>
       <div className="gallery-editing-container">
         {categoryOrder.map((categoryId, index) => {

@@ -63,33 +63,35 @@ const AjankohtaistaEditing = () => {
   };
 
   return (
-  <>
-    <div className="ajankohtaista-editing">
-      <h2>Ajankohtaista Muokkaus</h2>
-      {saveStatus === "success" && (
-        <p className="success-message">Tietojen tallennus onnistui!</p>
-      )}
-      {saveStatus === "error" && (
-        <p className="error-message">Virhe tallennettaessa tietoja. Yritä uudelleen.</p>
-      )}
-      {content.map((item) => (
-        <div className="content-item" key={item.id}>
-          <label htmlFor={`content-${item.id}`}>Rivi {item.id}: </label>
-          <textarea
-            id={`content-${item.id}`}
-            className="content-textarea"
-            value={item.text}
-            onChange={(e) => handleChange(e, item.id)}
-            placeholder={`Lisää sisältö riville ${item.id}...`}
-            rows={5}
-          />
-        </div>
-      ))}
-    </div>
-        <div className="save-button-container">
-          <button className="save-button" onClick={handleSave}>
-            Tallenna
-          </button>
+    <>
+      <div className="ajankohtaista-editing">
+        <h2>Ajankohtaista Muokkaus</h2>
+        {saveStatus === "success" && (
+          <p className="success-message">Tietojen tallennus onnistui!</p>
+        )}
+        {saveStatus === "error" && (
+          <p className="error-message">
+            Virhe tallennettaessa tietoja. Yritä uudelleen.
+          </p>
+        )}
+        {content.map((item) => (
+          <div className="content-item" key={item.id}>
+            <label htmlFor={`content-${item.id}`}>Rivi {item.id}: </label>
+            <textarea
+              id={`content-${item.id}`}
+              className="content-textarea"
+              value={item.text}
+              onChange={(e) => handleChange(e, item.id)}
+              placeholder={`Lisää sisältö riville ${item.id}...`}
+              rows={5}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="save-button-container">
+        <button className="save-button" onClick={handleSave}>
+          Tallenna
+        </button>
       </div>
     </>
   );

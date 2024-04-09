@@ -4,7 +4,6 @@ import "firebase/compat/storage";
 import "firebase/compat/firestore";
 import firebaseConfig from "../firebaseConfig";
 
-// Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -80,7 +79,7 @@ const RemontitEditing = ({ isAdminMode }) => {
         .doc(categoryId)
         .get();
       const orderData = orderSnapshot.data();
-      if (orderData && orderData.order) {
+      if (orderData?.order) {
         const orderedIds = orderData.order;
         categoryItems.sort((a, b) => {
           const aIndex = orderedIds.indexOf(a.imageUrl);
@@ -296,7 +295,7 @@ const RemontitEditing = ({ isAdminMode }) => {
       }
     } catch (error) {
       console.error("Virhe luokan poistamisessa:", error);
-      alert("Luokkaa poistettaessa tapahtui virhe.");
+      //alert("Luokkaa poistettaessa tapahtui virhe.");
     }
   };
 

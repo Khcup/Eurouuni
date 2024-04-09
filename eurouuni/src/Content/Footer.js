@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import firebaseConfig from '../firebaseConfig';
+import React, { useEffect, useState } from "react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import firebaseConfig from "../firebaseConfig";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -16,9 +16,9 @@ const Footer = () => {
   useEffect(() => {
     const fetchFooterContent = async () => {
       try {
-        const contactDocRef = doc(db, 'footer', 'contact');
-        const locationDocRef = doc(db, 'footer', 'location');
-        const socialDocRef = doc(db, 'footer', 'social');
+        const contactDocRef = doc(db, "footer", "contact");
+        const locationDocRef = doc(db, "footer", "location");
+        const socialDocRef = doc(db, "footer", "social");
 
         const contactDocSnap = await getDoc(contactDocRef);
         const locationDocSnap = await getDoc(locationDocRef);
@@ -37,7 +37,7 @@ const Footer = () => {
             location: locationData,
             social: socialData,
           });
-          
+
           const contactTitle = contactData.title;
           const locationTitle = locationData.title;
           const socialTitle = socialData.title;
@@ -47,10 +47,10 @@ const Footer = () => {
             social: socialTitle,
           });
         } else {
-          console.error('One or more footer documents not found');
+          console.error("One or more footer documents not found");
         }
       } catch (error) {
-        console.error('Error fetching footer content:', error);
+        console.error("Error fetching footer content:", error);
       }
     };
 
@@ -90,7 +90,7 @@ const Footer = () => {
           )}
         </div>
         <div className="col">
-            <h1>{footerTitles?.social}</h1>
+          <h1>{footerTitles?.social}</h1>
           {footerContent && (
             <a
               rel="noreferrer"
@@ -101,9 +101,9 @@ const Footer = () => {
                 alt="Instagram"
                 src={footerContent.social.instagramImage}
                 style={{
-                  maxHeight: '10%',
-                  minWidth: '10%',
-                  opacity: '0.65',
+                  maxHeight: "10%",
+                  minWidth: "10%",
+                  opacity: "0.65",
                 }}
               />
             </a>

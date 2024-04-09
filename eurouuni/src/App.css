@@ -196,6 +196,10 @@ a {
 	padding: 1rem;
 }
 
+.card-title {
+	text-align: center;
+}
+
 .card {
 	position: relative;
 	margin-bottom: 45px;
@@ -449,7 +453,7 @@ h4 {
 	overflow: scroll;
 	overflow-x: hidden;
 	overflow-y: scroll;
-	height: 340px;
+	height: 290px;
 }
 
 .chat-form {
@@ -462,7 +466,7 @@ h4 {
 	box-shadow: 7px 7px 56px -24px #00000091;
 	right: 70px;
 	bottom: 45px;
-	width: 260px;
+	width: 250px;
 	border-radius: 5px;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
@@ -573,13 +577,13 @@ button:hover {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 90%;
-	max-width: 400px;
-	padding: 20px;
+	width: 90%; /* Adjusted width for mobile */
+	max-width: 400px; /* Added max-width to ensure it doesn't overflow on larger screens */
+	padding: 20px; /* Reduced padding for mobile */
 	background-color: rgba(255, 255, 255, 0.95);
 	border-radius: 20px;
 	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-	z-index: 9999;
+	z-index: 9999; /* Adjust the z-index value as needed */
   }
   
   .login-title {
@@ -626,20 +630,20 @@ button:hover {
   /* Media query for smaller devices */
   @media only screen and (max-width: 600px) {
 	.login-container {
-	  padding: 15px;
+	  padding: 15px; /* Further reduce padding for smaller screens */
 	}
   }
 .logout-button {
-	background-color: #ff0000;
-	color: #fff;
-	border: none;
-	padding: 8px 16px;
-	cursor: pointer;
-	border-radius: 4px;
+	background-color: #ff0000; /* Red background color */
+	color: #fff; /* White text color */
+	border: none; /* Remove border */
+	padding: 8px 16px; /* Add padding */
+	cursor: pointer; /* Change cursor to pointer on hover */
+	border-radius: 4px; /* Add border radius */
 }
   
 .logout-button:hover {
-	background-color: #cc0000;
+	background-color: #cc0000; /* Darker red background color on hover */
 }
 
 .edit-button {
@@ -747,27 +751,27 @@ button:hover {
   }
 
 .app-gallery-item {
-	width: auto;
-	max-width: 100%;
-	height: auto;
-	max-height: 100%;
+	width: auto; /* Allow the width to adjust based on content */
+	max-width: 100%; /* Ensure the item doesn't exceed its container's width */
+	height: auto; /* Allow the height to adjust based on content */
+	max-height: 100%; /* Ensure the item doesn't exceed its container's height */
 	margin: 10px;
 	box-shadow: 0 2px 4px #0000001a;
 	border-radius: 10px;
 	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+	align-items: center; /* Center content vertically */
+	justify-content: center; /* Center content horizontally */
 	position: relative;
 	text-align: center;
-	overflow: hidden;
+	overflow: hidden; /* Prevent content from overflowing the item */
   }
   
   .item-wrapper img {
 	width: 200px;
 	height: 200px;
-	object-fit: contain;
-	margin: 0;
-	padding: 0;
+	object-fit: contain; /* Maintain aspect ratio and fit the entire image within the container */
+	margin: 0; /* Remove any default margins */
+	padding: 0; /* Remove any default padding */
   }
   
   .text-container {
@@ -815,7 +819,7 @@ button:hover {
     transition: opacity 0.3s ease;
     z-index: 9999999;
     overflow-y: auto;
-    max-height: 97vh;
+    max-height: 97vh; /* Set a specific maximum height */
 }
 
   
@@ -844,7 +848,7 @@ button:hover {
   
 .element-buttons {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow buttons to wrap onto multiple lines */
     justify-content: center;
     margin-bottom: 10px;
 }
@@ -861,6 +865,7 @@ button:hover {
     }
 }
 
+/* Further adjustments for extra small screens */
 @media (max-width: 576px) {
     .admin-panel {
         padding: 10px;
@@ -876,7 +881,7 @@ button:hover {
 
 .element-buttons button {
     margin-right: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Add margin at the bottom of each button */
     padding: 10px 20px;
     font-size: 16px;
     border: none;
@@ -928,12 +933,12 @@ button:hover {
 	justify-content: space-around;
 	gap: 20px;
 	padding: 20px;
-	max-height: calc(50vh);
-	overflow-y: auto;
+	max-height: calc(50vh); /* Set maximum height for container */
+	overflow-y: auto; /* Enable vertical scrolling if content exceeds container height */
   }
   
   .gallery-editing-category {
-	flex: 1 1 calc(50% - 20px);
+	flex: 1 1 calc(50% - 20px); /* Two categories per row */
 	max-width: calc(50% - 20px);
 	border: 1px solid #ccc;
 	padding: 10px;
@@ -972,31 +977,31 @@ button:hover {
   @media (max-width: 767px) {
 	.gallery-editing-container {
 	  padding: 10px;
-	  max-height: none;
-	  overflow-y: visible;
+	  max-height: none; /* Reset maximum height for smaller screens */
+	  overflow-y: visible; /* Disable scrolling for smaller screens */
 	}
   
 	.gallery-editing-category,
 	.category-editing-item {
-	  flex: 1 1 calc(100% - 20px);
+	  flex: 1 1 calc(100% - 20px); /* One item per row */
 	  max-width: calc(100% - 20px);
 	}
   }
 
   .add-category-btn {
-	margin-bottom: 10px; 
-	width: auto;
-	padding: 8px 16px;
-	font-size: 16px;
-	border: none;
-	border-radius: 4px;
-	background-color: #007bff77;
-	color: #fff;
-	cursor: pointer;
+	margin-bottom: 10px; /* Add margin to create space between the button and the categories */
+	width: auto; /* Set width to auto to adjust based on content */
+	padding: 8px 16px; /* Add padding to adjust button size */
+	font-size: 16px; /* Adjust font size */
+	border: none; /* Remove border */
+	border-radius: 4px; /* Add border radius */
+	background-color: #007bff77; /* Button background color */
+	color: #fff; /* Button text color */
+	cursor: pointer; /* Change cursor to pointer on hover */
   }
   
   .add-category-btn:hover {
-	background-color: #0056b3;
+	background-color: #0056b3; /* Darker background color on hover */
   }
 
 
@@ -1103,13 +1108,13 @@ button:hover {
   }
   
   input[type="text"] {
-	width: calc(100% - 5px);
+	width: calc(100% - 5px); /* Subtracting the padding from the width */
 	max-width: 100%;
 	padding: 12px;
 	margin-bottom: 10px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
-	box-sizing: border-box;
+	box-sizing: border-box; /* Ensures padding is included in width calculation */
   }
   
 

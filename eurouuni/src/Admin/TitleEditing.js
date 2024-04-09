@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import EditableTextField from "./EditableTextField";
 
 const TitleEditing = ({ firestore, section }) => {
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(""); // Initialize with empty string
 
   useEffect(() => {
     fetchDescription();
@@ -11,18 +11,13 @@ const TitleEditing = ({ firestore, section }) => {
 
   const fetchDescription = async () => {
     try {
-      const descriptionRef = collection(firestore, "descriptions", section, "remontit");
-      const querySnapshot = await getDocs(descriptionRef);
-  
-      let descriptionText = "";
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.text) {
-          descriptionText += data.text + "\n";
-        }
-      });
-  
-      setDescription(descriptionText.trim()); // Trimming to remove extra newline at the end
+      const descriptionDocRef = doc(firestore, "descriptions", section);
+      const descriptionDocSnap = await getDoc(descriptionDocRef);
+      if (descriptionDocSnap.exists()) {
+        setDescription(descriptionDocSnap.data().text || ""); // Use empty string if text doesn't exist
+      } else {
+        console.error("Description document not found");
+      }
     } catch (error) {
       console.error("Error fetching description:", error);
     }
@@ -35,8 +30,25 @@ const TitleEditing = ({ firestore, section }) => {
       setDescription(newValue);
       alert("Kuvaus tallennettu onnistuneesti!");
     } catch (error) {
-      console.error("Virhe kuvauksen tallentamisessa:", error);
+      console.error("Error saving description:", error);
       alert("Kuvausta tallennettaessa tapahtui virhe.");
+    }
+  };
+
+  // Function to fetch initial value from Firestore
+  const fetchInitialValue = async () => {
+    try {
+      const descriptionDocRef = doc(firestore, "descriptions", section);
+      const descriptionDocSnap = await getDoc(descriptionDocRef);
+      if (descriptionDocSnap.exists()) {
+        return descriptionDocSnap.data().text || ""; // Use empty string if text doesn't exist
+      } else {
+        console.error("Description document not found");
+        return ""; // Return empty string if document doesn't exist
+      }
+    } catch (error) {
+      console.error("Error fetching initial value:", error);
+      return ""; // Return empty string on error
     }
   };
 
@@ -46,6 +58,7 @@ const TitleEditing = ({ firestore, section }) => {
       <EditableTextField
         initialValue={description}
         onSave={handleDescriptionSave}
+        fetchInitialValue={fetchInitialValue} // Pass the fetchInitialValue function
         descriptionKey={`${section}_description`}
       />
     </>

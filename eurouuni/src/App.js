@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, {  useEffect,useState } from "react";
 import {
-  BrowserRouter as Router,
   Route,
   Routes,
+  HashRouter,
 } from "react-router-dom";
 import Navbar from "./Navbar";
 import Remonttigallery from "./gallery/Remontit-gallery";
@@ -22,17 +22,21 @@ const App = () => {
   const [palvelut1, setPalvelut1] = useState(false);
   const [remontit1, setRemontit1] = useState(false);
   const [muutpalvelut1, setMuutpalvelut1] = useState(false);
-
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.location.hash = "#/";
+    }
+  }, []);
   const toggleGallery = (setter) => () => {
     setter((prevState) => !prevState);
   };
 
   return (
-    <Router>
+    <HashRouter>
       <main>
       <Navbar />
         <Routes>
-        <Route path="/auth" element={<LoginForm />} />
+          <Route path="/auth" element={<LoginForm />} />
           <Route path="/admin" element={<AdminPage />} />
           {/* Add other routes here */}
         </Routes>
@@ -177,7 +181,7 @@ const App = () => {
         </div>
         <Footer />
       </main>
-    </Router>
+    </HashRouter>
   );
 };
 
