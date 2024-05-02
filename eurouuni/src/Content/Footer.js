@@ -103,7 +103,6 @@ const Footer = () => {
                 style={{
                   maxHeight: "10%",
                   minWidth: "10%",
-                  opacity: "0.65",
                 }}
               />
             </a>
